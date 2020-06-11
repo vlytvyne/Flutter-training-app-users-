@@ -39,11 +39,21 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) {
     json['name'] == null
         ? null
         : UserName.fromJson(json['name'] as Map<String, dynamic>),
+    json['picture'] == null
+        ? null
+        : UserPicture.fromJson(json['picture'] as Map<String, dynamic>),
+    json['email'] as String,
+    json['gender'] as String,
+    json['phone'] as String,
   );
 }
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
       'name': instance.name,
+      'picture': instance.picture,
+      'email': instance.email,
+      'gender': instance.gender,
+      'phone': instance.phone,
     };
 
 UserName _$UserNameFromJson(Map<String, dynamic> json) {
@@ -56,4 +66,19 @@ UserName _$UserNameFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$UserNameToJson(UserName instance) => <String, dynamic>{
       'first': instance.first,
       'last': instance.last,
+    };
+
+UserPicture _$UserPictureFromJson(Map<String, dynamic> json) {
+  return UserPicture(
+    json['large'] as String,
+    json['medium'] as String,
+    json['thumbnail'] as String,
+  );
+}
+
+Map<String, dynamic> _$UserPictureToJson(UserPicture instance) =>
+    <String, dynamic>{
+      'large': instance.large,
+      'medium': instance.medium,
+      'thumbnail': instance.thumbnail,
     };

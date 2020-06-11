@@ -30,6 +30,7 @@ dependencies:
   pretty_dio_logger: any
   analyzer: ^0.39.3
   rxdart: any
+  cached_network_image: any
 
 dev_dependencies:
   flutter_test:

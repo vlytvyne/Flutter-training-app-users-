@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:retrofit/retrofit.dart';
 
 part 'UsersResponse.g.dart';
 
@@ -31,10 +32,13 @@ class Info {
 @JsonSerializable()
 class UserModel {
 
-	@JsonKey(name: 'name')
 	final UserName name;
+	final UserPicture picture;
+	final String email;
+	final String gender;
+	final String phone;
 
-	UserModel(this.name);
+	UserModel(this.name, this.picture, this.email, this.gender, this.phone);
 
 	factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 	Map<String, dynamic> toJson() => _$UserModelToJson(this);
@@ -54,5 +58,19 @@ class UserName {
 	factory UserName.fromJson(Map<String, dynamic> json) => _$UserNameFromJson(json);
 	Map<String, dynamic> toJson() => _$UserNameToJson(this);
 
+
+}
+
+@JsonSerializable()
+class UserPicture {
+
+	final String large;
+	final String medium;
+	final String thumbnail;
+
+  UserPicture(this.large, this.medium, this.thumbnail);
+
+  factory UserPicture.fromJson(Map<String, dynamic> json) => _$UserPictureFromJson(json);
+  Map<String, dynamic> toJson() => _$UserPictureToJson(this);
 
 }
