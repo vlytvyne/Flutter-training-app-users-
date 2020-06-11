@@ -49,10 +49,13 @@ class _UsersListFragmentState extends State<UsersListFragment> with AutomaticKee
 	}
 
 	Widget buildUsersList(List<UserModel> list) =>
-		ListView.builder(
-			controller: _scrollController,
-			itemCount: list.length,
-			itemBuilder: (context, index) => UserTile(list[index], index),
+		RefreshIndicator(
+		  child: ListView.builder(
+		  	controller: _scrollController,
+		  	itemCount: list.length,
+		  	itemBuilder: (context, index) => UserTile(list[index], index),
+		  ),
+			onRefresh: vm.refreshUsers,
 		);
 
   @override

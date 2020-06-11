@@ -16,7 +16,7 @@ class UsersListVM {
 	Stream<bool> get loadingStream => _loadingEmitter.stream;
 	final initialLoading = true;
 
-	loadUsers() async {
+	Future loadUsers() async {
 		if (isLoading) {
 			return;
 		}
@@ -32,6 +32,15 @@ class UsersListVM {
 		nextPage++;
 		_usersList.addAll(response.users);
 		_userListEmitter.add(_usersList);
+	}
+
+	Future refreshUsers() async {
+		if (isLoading) {
+			return;
+		}
+		nextPage = 1;
+		_usersList.clear();
+		await loadUsers();
 	}
 
 	dispose() {
