@@ -1,7 +1,13 @@
-import 'package:architecture/UsersFragment.dart';
+import 'package:architecture/UsersListFragment.dart';
 import 'package:flutter/material.dart';
 
 class HomeRoute extends StatefulWidget {
+
+	final fragments = {
+		0: UsersListFragment(),
+		1: Text("Page 1"),
+		2: Text("Page 2"),
+	};
 
   @override
   _HomeRouteState createState() => _HomeRouteState();
@@ -9,19 +15,20 @@ class HomeRoute extends StatefulWidget {
 
 class _HomeRouteState extends State<HomeRoute> {
 
-	final _fragments = {
-		0: UsersListFragment(),
-		1: Text("Page 1")
-	};
-
 	int _currentFragmentId = 0;
+
+	final _pageController = PageController();
 
 	@override
   Widget build(BuildContext context) =>
 	    Scaffold(
 		    appBar: buildAppBar(context),
 		    drawer: buildDrawer(context),
-		    body: buildBody(context, _currentFragmentId),
+		    body: PageView(
+			    controller: _pageController,
+			    children: widget.fragments.values.toList(),
+			    physics: NeverScrollableScrollPhysics()
+		    ),
 	    );
 
   AppBar buildAppBar(context) =>
@@ -36,7 +43,8 @@ class _HomeRouteState extends State<HomeRoute> {
 					children: <Widget> [
 						buildDrawerHeader(context),
 						buildDrawerButton(context, "Users", 0),
-						buildDrawerButton(context, "Next page", 1),
+						buildDrawerButton(context, "page 1", 1),
+						buildDrawerButton(context, "page 2", 2),
 					],
 				),
 			);
@@ -69,15 +77,9 @@ class _HomeRouteState extends State<HomeRoute> {
 		    ),
 		    onTap: () {
 					Navigator.pop(context);
-			    setState(() => _currentFragmentId = fragmentId);
-		    }
+					_pageController.jumpToPage(fragmentId);
+					setState(() => _currentFragmentId = fragmentId);
+		    },
+				selected: fragmentId == _currentFragmentId,
 		  );
-
-	Widget buildBody(context, fragmentId) {
-		if (_fragments.containsKey(fragmentId)) {
-			return _fragments[_currentFragmentId];
-		} else {
-			return Text("Not Found");
-		}
-	}
 }
