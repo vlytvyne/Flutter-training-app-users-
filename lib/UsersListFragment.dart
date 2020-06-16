@@ -1,5 +1,6 @@
 import 'package:architecture/Mixins.dart';
 import 'package:architecture/UserDetailsRoute.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -39,12 +40,10 @@ class _UsersListFragmentState extends State<UsersListFragment> with
 	@override
 	Widget build(BuildContext context) {
 		super.build(context);
+		_vm.refreshEventStream.listen((_) => buildSnackbar(context).show(context));
 		return Stack(
 			children: <Widget>[
-				SafeStreamBuilder(
-					stream: _vm.usersListStream,
-					builder: (context, snapshot) => buildUsersList(snapshot.data),
-				),
+				buildListWithSearch(),
 				SafeStreamBuilder(
 					stream: _vm.loadingStream,
 					builder: (context, snapshot) => Visibility(visible: snapshot.data, child: LinearProgressIndicator(),)
@@ -53,19 +52,65 @@ class _UsersListFragmentState extends State<UsersListFragment> with
 		);
 	}
 
+	Column buildListWithSearch() {
+	  return Column(
+	  	children: <Widget>[
+	  		SearchField(
+				  onTextChanged: _vm.setSearchQuery,
+			  ),
+	  		Expanded(
+	  		  child: SafeStreamBuilder(
+	  		  	stream: _vm.usersListStream,
+	  		  	builder: (context, snapshot) => buildUsersList(snapshot.data),
+	  		  ),
+	  		),
+	  	],
+	  );
+	}
+
 	Widget buildUsersList(List<UserModel> list) =>
 			RefreshIndicator(
 				child: ListView.builder(
 					controller: _scrollController,
 					itemCount: list.length,
-					itemBuilder: (context, index) => UserTile(
-							list[index],
-							index,
-							() => onTileClick(context, list[index]),
-							(checked) => _vm.setFavorite(list[index], checked)
-					),
+					itemBuilder: (context, index) => buildUserTile(list[index]),
 				),
 				onRefresh: _vm.refreshUsers,
+			);
+
+	buildUserTile(UserModel user) =>
+			Dismissible(
+				key: ValueKey(user.name.fullname),
+				direction: DismissDirection.endToStart,
+				background: Container(
+					color: Colors.red[600],
+					child: Align(
+						alignment: Alignment.centerRight,
+						child: Padding(
+							padding: const EdgeInsets.only(right: 24),
+							child: Icon(
+								Icons.delete,
+								color: Colors.white,
+							),
+						),
+					),
+				),
+				child: UserTile(
+					user,
+					() => onTileClick(context, user),
+					(checked) => _vm.setFavorite(user, checked)
+				),
+				onDismissed: (_) => _vm.deleteUser(user),
+			);
+
+	Flushbar buildSnackbar(context) =>
+			Flushbar(
+				message: 'User list has been refreshed',
+				margin: EdgeInsets.all(8),
+				borderRadius: 8,
+				duration: Duration(seconds: 2),
+				icon: Icon(Icons.info, color: Theme.of(context).primaryColor,),
+				forwardAnimationCurve: Curves.bounceIn,
 			);
 
 	@override
@@ -84,4 +129,65 @@ class _UsersListFragmentState extends State<UsersListFragment> with
 		super.dispose();
 	}
 	
+}
+
+class SearchField extends StatelessWidget {
+
+	final decorator = InputDecoration(
+			border: InputBorder.none,
+			focusedBorder: InputBorder.none,
+			icon: Icon(Icons.search),
+			hintText: 'Search'
+	);
+	
+	final textStyle = TextStyle(
+			fontSize: 18
+	);
+
+	final textController = TextEditingController();
+
+	final Function(String) onTextChanged;
+
+  SearchField({Key key, @required this.onTextChanged}) : super(key: key);
+
+	@override
+  Widget build(BuildContext context) =>
+		  Material(
+			  elevation: 4,
+			  child: Container(
+				  height: 60,
+				  color: Colors.white,
+				  child: Row(
+					  children: <Widget>[
+						  buildSearchField(),
+						  buildCloseButton()
+					  ],
+				  ),
+			  ),
+		  );
+
+	Expanded buildSearchField() => 
+			Expanded(
+			  child: Center(
+				  child: Padding(
+					  padding: const EdgeInsets.only(left: 16, right: 8),
+					  child: TextField(
+						  onChanged: onTextChanged,
+						  controller: textController,
+						  style: textStyle,
+						  decoration: decorator,
+					  ),
+				  ),
+			  ),
+		  );
+
+	IconButton buildCloseButton() =>
+			IconButton(
+				icon: Icon(Icons.close),
+				onPressed: () {
+					textController.clear();
+					onTextChanged('');
+				},
+			);
+
 }

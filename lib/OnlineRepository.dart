@@ -16,7 +16,7 @@ class OnlineRepository {
 
 	OnlineRepository._createInstance();
 
-	final UserAPI _userAPI = UserAPI(Dio()..interceptors.add(PrettyDioLogger()));
+	final UserAPI _userAPI = UserAPI(Dio());
 
 	//requests
 	Future<UsersResponse> getRandomUser(int page) => _userAPI.getRandomUsers(USERS_SEED, USERS_IOP, page);

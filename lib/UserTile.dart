@@ -7,11 +7,10 @@ import 'UsersResponse.dart';
 class UserTile extends StatelessWidget {
 
 	final UserModel user;
-	final int index;
 	final VoidCallback onClick;
 	final Function(bool) onChecked;
 
-	const UserTile(this.user, this.index, this.onClick, this.onChecked, {Key key}) : super(key: key);
+	const UserTile(this.user, this.onClick, this.onChecked, {Key key}) : super(key: key);
 
 	@override
 	Widget build(BuildContext context) =>
