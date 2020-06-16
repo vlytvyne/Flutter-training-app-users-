@@ -10,7 +10,7 @@ import 'package:test/test.dart';
 
 void main() {
 	test("Test network call", () async {
-		final response = await OnlineRepository().getRandomUser(10);
-		print(response.users.length);
+		final response = await OnlineRepository().getRandomUser(1);
+		expect(response.users.length, 20);
 	});
 }

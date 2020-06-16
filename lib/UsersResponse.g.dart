@@ -72,14 +72,10 @@ Map<String, dynamic> _$UserNameToJson(UserName instance) => <String, dynamic>{
 UserPicture _$UserPictureFromJson(Map<String, dynamic> json) {
   return UserPicture(
     json['large'] as String,
-    json['medium'] as String,
-    json['thumbnail'] as String,
   );
 }
 
 Map<String, dynamic> _$UserPictureToJson(UserPicture instance) =>
     <String, dynamic>{
       'large': instance.large,
-      'medium': instance.medium,
-      'thumbnail': instance.thumbnail,
     };

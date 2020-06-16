@@ -68,10 +68,8 @@ class UserName {
 class UserPicture {
 
 	final String large;
-	final String medium;
-	final String thumbnail;
 
-  UserPicture(this.large, this.medium, this.thumbnail);
+  UserPicture(this.large);
 
   factory UserPicture.fromJson(Map<String, dynamic> json) => _$UserPictureFromJson(json);
   Map<String, dynamic> toJson() => _$UserPictureToJson(this);
