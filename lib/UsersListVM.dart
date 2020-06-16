@@ -4,43 +4,46 @@ import 'UsersResponse.dart';
 
 class UsersListVM {
 
-	int nextPage = 1;
-	bool isLoading = false;
+	int _nextPage = 1;
+	bool _isLoading = false;
 	List<UserModel> _usersList = [];
 
 	final _userListEmitter = BehaviorSubject<List<UserModel>>();
 	Stream<List<UserModel>> get usersListStream => _userListEmitter.stream;
-	final initialUserList = <UserModel>[];
 
 	final _loadingEmitter = BehaviorSubject<bool>();
 	Stream<bool> get loadingStream => _loadingEmitter.stream;
-	final initialLoading = true;
 
 	Future loadUsers() async {
-		if (isLoading) {
+		if (_isLoading) {
 			return;
 		}
-		isLoading = true;
+		_isLoading = true;
 		_loadingEmitter.add(true);
 		await performLoading();
-		isLoading = false;
+		_isLoading = false;
 		_loadingEmitter.add(false);
 	}
 
 	Future performLoading() async {
-		var response = await OnlineRepository().getRandomUser(nextPage);
-		nextPage++;
+		var response = await OnlineRepository().getRandomUser(_nextPage);
+		_nextPage++;
 		_usersList.addAll(response.users);
 		_userListEmitter.add(_usersList);
 	}
 
 	Future refreshUsers() async {
-		if (isLoading) {
+		if (_isLoading) {
 			return;
 		}
-		nextPage = 1;
+		_nextPage = 1;
 		_usersList.clear();
 		await loadUsers();
+	}
+
+	setFavorite(UserModel user, bool isFavorite) {
+		_usersList.where((element) => element == user).first.isFavorite = isFavorite;
+		_userListEmitter.add(_usersList);
 	}
 
 	dispose() {

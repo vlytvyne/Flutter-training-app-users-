@@ -45,7 +45,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) {
     json['email'] as String,
     json['gender'] as String,
     json['phone'] as String,
-  );
+  )..isFavorite = json['isFavorite'] as bool ?? false;
 }
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
@@ -54,6 +54,7 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
       'email': instance.email,
       'gender': instance.gender,
       'phone': instance.phone,
+      'isFavorite': instance.isFavorite,
     };
 
 UserName _$UserNameFromJson(Map<String, dynamic> json) {

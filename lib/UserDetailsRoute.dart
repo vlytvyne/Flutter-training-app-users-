@@ -47,7 +47,7 @@ class UserDetailsRoute extends StatelessWidget {
 	      height: 300,
 	      width: double.infinity,
 	      child: Hero(
-	        tag: user.picture.large,
+		      tag: user.name.fullname,
 	        child: FittedBox(
 	          fit: BoxFit.fitWidth,
 	          child: CachedNetworkImage(imageUrl: user.picture.large,)

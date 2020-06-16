@@ -38,6 +38,9 @@ class UserModel {
 	final String gender;
 	final String phone;
 
+	@JsonKey(defaultValue: false)
+	bool isFavorite;
+
 	UserModel(this.name, this.picture, this.email, this.gender, this.phone);
 
 	factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);

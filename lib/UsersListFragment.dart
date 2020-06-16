@@ -1,11 +1,10 @@
-import 'package:architecture/OnlineRepository.dart';
+import 'package:architecture/Mixins.dart';
 import 'package:architecture/UserDetailsRoute.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:rxdart/rxdart.dart';
 
+import 'SafeStreamBuilder.dart';
+import 'UserTile.dart';
 import 'UsersListVM.dart';
 import 'UsersResponse.dart';
 
@@ -17,18 +16,24 @@ class UsersListFragment extends StatefulWidget {
 	_UsersListFragmentState createState() => _UsersListFragmentState();
 }
 
-class _UsersListFragmentState extends State<UsersListFragment> with AutomaticKeepAliveClientMixin<UsersListFragment> {
+class _UsersListFragmentState extends State<UsersListFragment> with
+		AutomaticKeepAliveClientMixin<UsersListFragment>,
+		AfterLayoutMixin<UsersListFragment> {
 
-	final vm = UsersListVM();
+	final _vm = UsersListVM();
 	final _scrollController = ScrollController();
 
 	bool get isScrolledToEnd => _scrollController.position.pixels >= _scrollController.position.maxScrollExtent;
 
 	@override
 	void initState() {
-		_scrollController.addListener(() { if (isScrolledToEnd) vm.loadUsers(); });
-		vm.loadUsers();
+		_scrollController.addListener(() { if (isScrolledToEnd) _vm.loadUsers(); });
 		super.initState();
+	}
+
+	@override
+	void afterFirstLayout(BuildContext context) {
+		_vm.loadUsers();
 	}
 
 	@override
@@ -36,14 +41,12 @@ class _UsersListFragmentState extends State<UsersListFragment> with AutomaticKee
 		super.build(context);
 		return Stack(
 			children: <Widget>[
-				StreamBuilder(
-					stream: vm.usersListStream,
-					initialData: vm.initialUserList,
+				SafeStreamBuilder(
+					stream: _vm.usersListStream,
 					builder: (context, snapshot) => buildUsersList(snapshot.data),
 				),
-				StreamBuilder(
-					stream: vm.loadingStream,
-					initialData: vm.initialLoading,
+				SafeStreamBuilder(
+					stream: _vm.loadingStream,
 					builder: (context, snapshot) => Visibility(visible: snapshot.data, child: LinearProgressIndicator(),)
 				)
 			],
@@ -55,63 +58,30 @@ class _UsersListFragmentState extends State<UsersListFragment> with AutomaticKee
 				child: ListView.builder(
 					controller: _scrollController,
 					itemCount: list.length,
-					itemBuilder: (context, index) => UserTile(list[index], index),
+					itemBuilder: (context, index) => UserTile(
+							list[index],
+							index,
+							() => onTileClick(context, list[index]),
+							(checked) => _vm.setFavorite(list[index], checked)
+					),
 				),
-				onRefresh: vm.refreshUsers,
+				onRefresh: _vm.refreshUsers,
 			);
 
 	@override
 	bool get wantKeepAlive => true;
 
-	@override
-	void dispose() {
-		vm.dispose();
-		super.dispose();
-	}
-	
-}
-
-class UserTile extends StatelessWidget {
-
-	final UserModel user;
-	final int index;
-
-	const UserTile(this.user, this.index, {Key key}) : super(key: key);
-
-	@override
-	Widget build(BuildContext context) =>
-			ListTile(
-				title: Text(
-					user.name.fullname,
-					style: TextStyle(fontSize: 20),
-				),
-				subtitle: Text(
-					user.email,
-					style: TextStyle(fontSize: 18),
-				),
-				onTap: () => onTileClick(context),
-				leading: buildAvatar(),
-			);
-
-	onTileClick(context) {
+	onTileClick(context, user) {
 		Navigator.push(
 				context,
 				MaterialPageRoute(builder: (context) => UserDetailsRoute(user: user,))
 		);
 	}
 
-	Widget buildAvatar() =>
-		 Hero(
-			 tag: user.picture.large,
-			 child: ClipOval(
-				 child: SizedBox(
-					 height: 40,
-					 width: 40,
-					 child: CachedNetworkImage(
-						 imageUrl: user.picture.large,
-						 placeholder: (context, url) => Container(color: Colors.blue,),
-					 ),
-				 ),
-			 ),
-		 );
+	@override
+	void dispose() {
+		_vm.dispose();
+		super.dispose();
+	}
+	
 }
