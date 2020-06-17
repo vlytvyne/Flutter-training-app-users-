@@ -1,6 +1,8 @@
+import 'package:architecture/data/filters/UserFilter.dart';
 import 'package:architecture/data/network/models/UsersResponse.dart';
 import 'package:architecture/screens/user_details/UserDetailsRoute.dart';
 import 'package:architecture/utils/Mixins.dart';
+import 'package:architecture/widgets/ModelSheetUserFilter.dart';
 import 'package:architecture/widgets/SafeStreamBuilder.dart';
 import 'package:architecture/widgets/UserTile.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,33 +22,61 @@ class _UserStorageFragmentState extends State<UserStorageFragment> with AfterLay
 
 	@override
 	void afterFirstLayout(BuildContext context) {
-		_vm.loadAllUsers();
+		_vm.loadUsers();
 	}
 
   @override
   Widget build(BuildContext context) {
   	return Scaffold(
-		  appBar: buildAppBar(),
-  	  body: Stack(
-			  children: <Widget>[
-				  SafeStreamBuilder<List<User>>(
-					  stream: _vm.userListStream,
-					  builder: (context, snapshot) => buildUsersList(snapshot.data),
-				  ),
-				  SafeStreamBuilder<bool>(
-					  stream: _vm.loadingStream,
-					  builder: (context, snapshot) => Visibility(visible: snapshot.data, child: LinearProgressIndicator(),)
-				  )
-			  ],
-		  ),
+		  appBar: buildAppBar(context),
+  	  body: buildBody(),
   	);
   }
 
-  AppBar buildAppBar() {
-    return AppBar(
+  AppBar buildAppBar(context) =>
+		  AppBar(
 			  title: Text('Saved users'),
+			  actions: <Widget>[
+			  	IconButton(
+					  icon: Icon(Icons.filter_list),
+					  onPressed: () {
+					  	showModalBottomSheet(
+							  context: context,
+							  builder: (context) => buildModelSheet(context),
+						  );
+					  },
+				  )
+			  ],
 		  );
-  }
+
+  Widget buildModelSheet(context) =>
+		  SafeStreamBuilder<UserFilter>(
+			  stream: _vm.filterStream,
+			  builder: (context, snapshot) => ModelSheetUserFilter(
+				  filter: snapshot.data,
+				  onApply: (filter) {
+				    Navigator.of(context).pop();
+				    _vm.setFilter(filter);
+				  },
+			  ),
+		  );
+
+	Widget buildBody() =>
+			Stack(
+				children: <Widget>[
+					SafeStreamBuilder<List<User>>(
+						stream: _vm.userListStream,
+						builder: (context, snapshot) => snapshot.data.length != 0 ?
+							buildUsersList(snapshot.data)
+								:
+							Center(child: Text('No users'))
+					),
+					SafeStreamBuilder<bool>(
+							stream: _vm.loadingStream,
+							builder: (context, snapshot) => Visibility(visible: snapshot.data, child: LinearProgressIndicator(),)
+					)
+				]
+			);
 
 	Widget buildUsersList(List<User> list) =>
 			ListView.builder(

@@ -143,8 +143,30 @@ class _$UserDao extends UserDao {
   final DeletionAdapter<UserDbModel> _userDbModelDeletionAdapter;
 
   @override
-  Future<List<UserDbModel>> fetchAllUsers() async {
+  Future<List<UserDbModel>> fetchAllUsersASC() async {
     return _queryAdapter.queryList('SELECT * FROM Users ORDER BY fullname',
+        mapper: _usersMapper);
+  }
+
+  @override
+  Future<List<UserDbModel>> fetchAllUsersDESC() async {
+    return _queryAdapter.queryList('SELECT * FROM Users ORDER BY fullname DESC',
+        mapper: _usersMapper);
+  }
+
+  @override
+  Future<List<UserDbModel>> fetchGenderUsersASC(String gender) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Users WHERE gender = ? ORDER BY fullname ASC',
+        arguments: <dynamic>[gender],
+        mapper: _usersMapper);
+  }
+
+  @override
+  Future<List<UserDbModel>> fetchGenderUsersDESC(String gender) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Users WHERE gender = ? ORDER BY fullname DESC',
+        arguments: <dynamic>[gender],
         mapper: _usersMapper);
   }
 

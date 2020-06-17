@@ -9,7 +9,7 @@ void main() {
 		await OfflineRepository().saveUser(User(UserName('Vasyl1', 'Bubka'), UserPicture('123'), 'email', 'male', '123'));
 		await OfflineRepository().saveUser(User(UserName('Vasyl2', 'Bubka'), UserPicture('123'), 'email', 'male', '123'));
 		await OfflineRepository().saveUser(User(UserName('Vasyl Last', 'Bubka'), UserPicture('123'), 'email', 'male', '123'));
-		final users = await OfflineRepository().fetchAllUsers();
+		final users = await OfflineRepository().fetchUsers();
 
 		expect(users.length, 3);
 		expect(users.last.name.first, 'Vasyl Last');

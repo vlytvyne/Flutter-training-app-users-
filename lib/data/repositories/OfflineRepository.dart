@@ -1,5 +1,7 @@
 import 'package:architecture/data/db/AppDatabase.dart';
+import 'package:architecture/data/db/dao/UserDao.dart';
 import 'package:architecture/data/db/models/UserDbModel.dart';
+import 'package:architecture/data/filters/UserFilter.dart';
 import 'package:architecture/data/network/models/UsersResponse.dart';
 
 class OfflineRepository {
@@ -29,10 +31,36 @@ class OfflineRepository {
 		return db.userDao.insertUsers(users.map((user) => UserDbModel.fromUserModel(user)).toList());
 	}
 
-	Future<List<User>> fetchAllUsers() async {
+	Future<List<User>> fetchUsers({UserFilter filter}) async {
 		final db = await _getDb();
-		final userDbModels = await db.userDao.fetchAllUsers();
+		List<UserDbModel> userDbModels;
+		if (filter == null) {
+			userDbModels = await db.userDao.fetchAllUsersASC();
+		} else {
+			userDbModels = await _applyFilterToQuery(db.userDao, filter);
+		}
 		return userDbModels.map((e) => e.toUserModel()).toList();
+	}
+
+// ignore: missing_return
+	Future<List<UserDbModel>> _applyFilterToQuery(UserDao userDao, UserFilter filter) async {
+	  if (filter.ascendingOrder) {
+	  	if (filter.showBothGenders) {
+	  		return userDao.fetchAllUsersASC();
+	  	} else if (filter.showMen) {
+	  		return userDao.fetchGenderUsersASC(GENDER_MALE);
+	  	} else if (filter.showWomen) {
+	  		return userDao.fetchGenderUsersASC(GENDER_FEMALE);
+	  	}
+	  } else {
+	  	if (filter.showBothGenders) {
+	  		return userDao.fetchAllUsersDESC();
+	  	} else if (filter.showMen) {
+	  		return userDao.fetchGenderUsersDESC(GENDER_MALE);
+	  	} else if (filter.showWomen) {
+	  		return userDao.fetchGenderUsersDESC(GENDER_FEMALE);
+	  	}
+	  }
 	}
 
 	Future<void> deleteUser(User user) async {
