@@ -8,12 +8,12 @@ class UserGalleryVM {
 	int _nextPage = 1;
 
 	bool _preventLoading = false;
-	List<UserModel> _userList = [];
+	final List<User> _userList = [];
 
 	String _searchQuery;
 
-	final _userListEmitter = BehaviorSubject<List<UserModel>>();
-	Stream<List<UserModel>> get usersListStream => _userListEmitter.stream;
+	final _userListEmitter = BehaviorSubject<List<User>>();
+	Stream<List<User>> get usersListStream => _userListEmitter.stream;
 
 	final _loadingEmitter = BehaviorSubject<bool>();
 	Stream<bool> get loadingStream => _loadingEmitter.stream;
@@ -52,7 +52,7 @@ class UserGalleryVM {
 		_refreshEventEmitter.add(null);
 	}
 
-	setSelected(UserModel user, bool isFavorite) {
+	setSelected(User user, bool isFavorite) {
 		_userList.where((element) => element == user).first.isSelected = isFavorite;
 		_userListEmitter.add(_userList);
 	}

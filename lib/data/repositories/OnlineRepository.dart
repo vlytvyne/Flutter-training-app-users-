@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:architecture/data/network/UserAPI.dart';
 import 'package:architecture/data/network/models/UsersResponse.dart';
 import 'package:dio/dio.dart';

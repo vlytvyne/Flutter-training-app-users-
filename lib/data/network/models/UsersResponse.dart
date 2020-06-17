@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:retrofit/retrofit.dart';
 
 part 'UsersResponse.g.dart';
 
@@ -7,7 +6,7 @@ part 'UsersResponse.g.dart';
 class UsersResponse {
 
 	@JsonKey(name: "results")
-	final List<UserModel> users;
+	final List<User> users;
 
 	final Info info;
 
@@ -30,7 +29,7 @@ class Info {
 }
 
 @JsonSerializable()
-class UserModel {
+class User {
 
 	final UserName name;
 	final UserPicture picture;
@@ -41,10 +40,10 @@ class UserModel {
 	@JsonKey(defaultValue: false)
 	bool isSelected;
 
-	UserModel(this.name, this.picture, this.email, this.gender, this.phone);
+	User(this.name, this.picture, this.email, this.gender, this.phone);
 
-	factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
-	Map<String, dynamic> toJson() => _$UserModelToJson(this);
+	factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+	Map<String, dynamic> toJson() => _$UserToJson(this);
 
 }
 

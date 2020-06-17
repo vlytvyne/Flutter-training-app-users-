@@ -1,5 +1,6 @@
 import 'package:architecture/utils/Mixins.dart';
 import 'package:architecture/screens/user_details/UserDetailsRoute.dart';
+import 'package:architecture/widgets/SearchField.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +39,9 @@ class _UserGalleryFragmentState extends State<UserGalleryFragment> with
 	}
 
 	@override
+	bool get wantKeepAlive => true;
+
+	@override
 	Widget build(BuildContext context) {
 		super.build(context);
 		return Scaffold(
@@ -48,10 +52,7 @@ class _UserGalleryFragmentState extends State<UserGalleryFragment> with
 			  	return Stack(
 					  children: <Widget>[
 						  buildListWithSearch(context),
-						  SafeStreamBuilder<bool>(
-							  stream: _vm.loadingStream,
-							  builder: (context, snapshot) => Visibility(visible: snapshot.data, child: LinearProgressIndicator(),)
-						  )
+						  buildLoadingIndicator()
 					  ],
 				  );
 			  },
@@ -59,16 +60,15 @@ class _UserGalleryFragmentState extends State<UserGalleryFragment> with
 		);
 	}
 
-	Widget buildFAB() {
-	  return SafeStreamBuilder<List<UserModel>>(
-		  stream: _vm.usersListStream,
-	    builder: (context, snapshot) => FloatingActionButton.extended(
-				label: Text('Save ${snapshot.data.where((user) => user.isSelected).length}'),
-				onPressed: _vm.saveSelectedUsers,
-				icon: Icon(Icons.save),
-			),
-	  );
-	}
+	Widget buildFAB() =>
+			SafeStreamBuilder<List<User>>(
+				stream: _vm.usersListStream,
+				builder: (context, snapshot) => FloatingActionButton.extended(
+					label: Text('Save ${snapshot.data.where((user) => user.isSelected).length}'),
+					onPressed: _vm.saveSelectedUsers,
+					icon: Icon(Icons.save),
+				),
+			);
 
 	void registerSnackBarListeners(BuildContext context) {
 	  _vm.refreshEventStream.listen(
@@ -87,25 +87,25 @@ class _UserGalleryFragmentState extends State<UserGalleryFragment> with
 			  )
 		  )
     );
-	  }
+  }
 
 	Column buildListWithSearch(context) {
-	  return Column(
-	  	children: <Widget>[
-	  		SearchField(
-				  onTextChanged: _vm.setSearchQuery,
-			  ),
-	  		Expanded(
-	  		  child: SafeStreamBuilder<List<UserModel>>(
-	  		  	stream: _vm.usersListStream,
-	  		  	builder: (context, snapshot) => buildUsersList(context, snapshot.data),
-	  		  ),
-	  		),
-	  	],
-	  );
+		return Column(
+			children: <Widget>[
+				SearchField(
+					onTextChanged: _vm.setSearchQuery,
+				),
+				Expanded(
+					child: SafeStreamBuilder<List<User>>(
+						stream: _vm.usersListStream,
+						builder: (context, snapshot) => buildUsersList(context, snapshot.data),
+					),
+				),
+			],
+		);
 	}
 
-	Widget buildUsersList(context, List<UserModel> list) =>
+	Widget buildUsersList(context, List<User> list) =>
 			RefreshIndicator(
 				child: ListView.builder(
 					controller: _scrollController,
@@ -115,26 +115,13 @@ class _UserGalleryFragmentState extends State<UserGalleryFragment> with
 				onRefresh: _vm.refreshUsers,
 			);
 
-	buildUserTile(context, UserModel user) =>
+	buildUserTile(context, User user) =>
 			UserTile(
-				user,
-				hasSelectionOption: true,
-				onClick: () => onTileClick(context, user),
-				onSelected: (checked) => _vm.setSelected(user, checked)
+					user,
+					hasSelectionOption: true,
+					onClick: () => onTileClick(context, user),
+					onSelected: (checked) => _vm.setSelected(user, checked)
 			);
-
-	Flushbar buildSnackbar(context) =>
-			Flushbar(
-				message: 'User list has been refreshed',
-				margin: EdgeInsets.all(8),
-				borderRadius: 8,
-				duration: Duration(seconds: 2),
-				icon: Icon(Icons.info, color: Theme.of(context).primaryColor,),
-				forwardAnimationCurve: Curves.bounceIn,
-			);
-
-	@override
-	bool get wantKeepAlive => true;
 
 	onTileClick(context, user) {
 		Navigator.push(
@@ -143,71 +130,16 @@ class _UserGalleryFragmentState extends State<UserGalleryFragment> with
 		);
 	}
 
+	Widget buildLoadingIndicator() =>
+			SafeStreamBuilder<bool>(
+			  stream: _vm.loadingStream,
+			  builder: (context, snapshot) => Visibility(visible: snapshot.data, child: LinearProgressIndicator(),)
+		  );
+
 	@override
 	void dispose() {
 		_vm.dispose();
 		super.dispose();
 	}
 	
-}
-
-class SearchField extends StatelessWidget {
-
-	final decorator = InputDecoration(
-			border: InputBorder.none,
-			focusedBorder: InputBorder.none,
-			icon: Icon(Icons.search),
-			hintText: 'Search'
-	);
-	
-	final textStyle = TextStyle(
-			fontSize: 18
-	);
-
-	final textController = TextEditingController();
-
-	final Function(String) onTextChanged;
-
-  SearchField({Key key, @required this.onTextChanged}) : super(key: key);
-
-	@override
-  Widget build(BuildContext context) =>
-		  Material(
-			  elevation: 4,
-			  child: Container(
-				  height: 60,
-				  color: Colors.white,
-				  child: Row(
-					  children: <Widget>[
-						  buildSearchField(),
-						  buildCloseButton()
-					  ],
-				  ),
-			  ),
-		  );
-
-	Expanded buildSearchField() => 
-			Expanded(
-			  child: Center(
-				  child: Padding(
-					  padding: const EdgeInsets.only(left: 16, right: 8),
-					  child: TextField(
-						  onChanged: onTextChanged,
-						  controller: textController,
-						  style: textStyle,
-						  decoration: decorator,
-					  ),
-				  ),
-			  ),
-		  );
-
-	IconButton buildCloseButton() =>
-			IconButton(
-				icon: Icon(Icons.close),
-				onPressed: () {
-					textController.clear();
-					onTextChanged('');
-				},
-			);
-
 }

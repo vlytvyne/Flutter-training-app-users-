@@ -1,5 +1,5 @@
+import 'package:architecture/data/network/models/UsersResponse.dart';
 import 'package:floor/floor.dart';
-import '../../network/models/UsersResponse.dart';
 
 @Entity(tableName: 'Users', primaryKeys: ['firstName', 'lastName'])
 class UserDbModel {
@@ -14,10 +14,10 @@ class UserDbModel {
 
   UserDbModel(this.firstName, this.lastName, this.fullname, this.largePictureUrl, this.email, this.gender, this.phone);
 
-  factory UserDbModel.fromUserModel(UserModel user) =>
+  factory UserDbModel.fromUserModel(User user) =>
 		  UserDbModel(user.name.first, user.name.last, user.name.fullname, user.picture.large, user.email, user.gender, user.phone);
 
-  UserModel toUserModel() =>
-		  UserModel(UserName(firstName, lastName), UserPicture(largePictureUrl), email, gender, phone);
+  User toUserModel() =>
+		  User(UserName(firstName, lastName), UserPicture(largePictureUrl), email, gender, phone);
 
 }

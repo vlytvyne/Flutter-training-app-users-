@@ -1,12 +1,12 @@
+import 'package:architecture/data/network/models/UsersResponse.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../data/network/models/UsersResponse.dart';
 
 class UserDetailsRoute extends StatelessWidget {
 
-	final UserModel user;
+	final User user;
 
   const UserDetailsRoute({Key key, this.user}) : super(key: key);
 

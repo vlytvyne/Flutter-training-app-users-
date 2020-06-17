@@ -9,8 +9,8 @@ part of 'UsersResponse.dart';
 UsersResponse _$UsersResponseFromJson(Map<String, dynamic> json) {
   return UsersResponse(
     (json['results'] as List)
-        ?.map((e) =>
-            e == null ? null : UserModel.fromJson(e as Map<String, dynamic>))
+        ?.map(
+            (e) => e == null ? null : User.fromJson(e as Map<String, dynamic>))
         ?.toList(),
     json['info'] == null
         ? null
@@ -34,8 +34,8 @@ Map<String, dynamic> _$InfoToJson(Info instance) => <String, dynamic>{
       'page': instance.page,
     };
 
-UserModel _$UserModelFromJson(Map<String, dynamic> json) {
-  return UserModel(
+User _$UserFromJson(Map<String, dynamic> json) {
+  return User(
     json['name'] == null
         ? null
         : UserName.fromJson(json['name'] as Map<String, dynamic>),
@@ -48,7 +48,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) {
   )..isSelected = json['isSelected'] as bool ?? false;
 }
 
-Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
+Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'name': instance.name,
       'picture': instance.picture,
       'email': instance.email,

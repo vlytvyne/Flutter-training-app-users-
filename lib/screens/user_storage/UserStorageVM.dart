@@ -4,13 +4,13 @@ import 'package:rxdart/rxdart.dart';
 
 class UserStorageVM {
 
-	final _userList = <UserModel>[];
-	final _userListForUndo = <UserModel>[];
+	final _userList = <User>[];
+	final _userListForUndo = <User>[];
 
-	UserModel _userForUndo;
+	User _userForUndo;
 
-	final _userListEmitter = BehaviorSubject<List<UserModel>>();
-	Stream<List<UserModel>> get userListStream => _userListEmitter.stream;
+	final _userListEmitter = BehaviorSubject<List<User>>();
+	Stream<List<User>> get userListStream => _userListEmitter.stream;
 
 	final _loadingEmitter = BehaviorSubject<bool>();
 	Stream<bool> get loadingStream => _loadingEmitter.stream;
@@ -23,7 +23,7 @@ class UserStorageVM {
 		_loadingEmitter.add(false);
 	}
 
-	deleteUser(UserModel user) {
+	deleteUser(User user) {
 		OfflineRepository().deleteUser(user);
 		_userForUndo = user;
 		_userListForUndo.clear();

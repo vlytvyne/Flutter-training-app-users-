@@ -6,7 +6,7 @@ import '../data/network/models/UsersResponse.dart';
 
 class UserTile extends StatelessWidget {
 
-	final UserModel user;
+	final User user;
 	final VoidCallback onClick;
 	final Function(bool) onSelected;
   final hasSelectionOption;
@@ -27,11 +27,12 @@ class UserTile extends StatelessWidget {
 				onTap: onClick ?? () {},
 				leading: buildAvatar(context),
 				trailing: hasSelectionOption ?
-				Checkbox(
-					value: user.isSelected,
-					onChanged: onSelected,
-				) :
-				SizedBox.shrink(),
+					Checkbox(
+						value: user.isSelected,
+						onChanged: onSelected,
+					)
+						:
+					SizedBox.shrink(),
 			);
 
 	Widget buildAvatar(context) =>
