@@ -80,7 +80,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Users` (`firstName` TEXT, `lastName` TEXT, `largePictureUrl` TEXT, `email` TEXT, `gender` TEXT, `phone` TEXT, PRIMARY KEY (`firstName`, `lastName`))');
+            'CREATE TABLE IF NOT EXISTS `Users` (`firstName` TEXT, `lastName` TEXT, `fullname` TEXT, `largePictureUrl` TEXT, `email` TEXT, `gender` TEXT, `phone` TEXT, PRIMARY KEY (`firstName`, `lastName`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -103,6 +103,7 @@ class _$UserDao extends UserDao {
             (UserDbModel item) => <String, dynamic>{
                   'firstName': item.firstName,
                   'lastName': item.lastName,
+                  'fullname': item.fullname,
                   'largePictureUrl': item.largePictureUrl,
                   'email': item.email,
                   'gender': item.gender,
@@ -115,6 +116,7 @@ class _$UserDao extends UserDao {
             (UserDbModel item) => <String, dynamic>{
                   'firstName': item.firstName,
                   'lastName': item.lastName,
+                  'fullname': item.fullname,
                   'largePictureUrl': item.largePictureUrl,
                   'email': item.email,
                   'gender': item.gender,
@@ -130,6 +132,7 @@ class _$UserDao extends UserDao {
   static final _usersMapper = (Map<String, dynamic> row) => UserDbModel(
       row['firstName'] as String,
       row['lastName'] as String,
+      row['fullname'] as String,
       row['largePictureUrl'] as String,
       row['email'] as String,
       row['gender'] as String,
@@ -141,7 +144,8 @@ class _$UserDao extends UserDao {
 
   @override
   Future<List<UserDbModel>> fetchAllUsers() async {
-    return _queryAdapter.queryList('SELECT * FROM Users', mapper: _usersMapper);
+    return _queryAdapter.queryList('SELECT * FROM Users ORDER BY fullname',
+        mapper: _usersMapper);
   }
 
   @override

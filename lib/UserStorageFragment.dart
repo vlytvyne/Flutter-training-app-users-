@@ -66,7 +66,18 @@ class _UserStorageFragmentState extends State<UserStorageFragment> with AfterLay
 					user,
 					onClick: () => onTileClick(context, user),
 				),
-				onDismissed: (_) => _vm.deleteUser(user),
+				onDismissed: (_) => {
+					_vm.deleteUser(user),
+					Scaffold.of(context).showSnackBar(
+						SnackBar(
+							content: Text('${user.name.fullname} has been deleted'),
+							action: SnackBarAction(
+								label: 'UNDO',
+								onPressed: _vm.undoLastDelete,
+							),
+						)
+					)
+				}
 			);
 
 	onTileClick(context, user) {

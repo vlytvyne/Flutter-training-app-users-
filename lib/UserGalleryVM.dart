@@ -80,7 +80,7 @@ class UserGalleryVM {
 	}
 	
 	saveSelectedUsers() {
-		final usersToSave = _userList.where((user) => user.isSelected);
+		final usersToSave = _userList.where((user) => user.isSelected).toList();
 		if (usersToSave.length == 0) {
 			return;
 		}

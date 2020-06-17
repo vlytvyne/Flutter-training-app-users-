@@ -5,6 +5,9 @@ import 'package:rxdart/rxdart.dart';
 class UserStorageVM {
 
 	final _userList = <UserModel>[];
+	final _userListForUndo = <UserModel>[];
+
+	UserModel _userForUndo;
 
 	final _userListEmitter = BehaviorSubject<List<UserModel>>();
 	Stream<List<UserModel>> get userListStream => _userListEmitter.stream;
@@ -22,7 +25,17 @@ class UserStorageVM {
 
 	deleteUser(UserModel user) {
 		OfflineRepository().deleteUser(user);
+		_userForUndo = user;
+		_userListForUndo.clear();
+		_userListForUndo.addAll(_userList);
 		_userList.remove(user);
+		_userListEmitter.add(_userList);
+	}
+	
+	undoLastDelete() {
+		OfflineRepository().saveUser(_userForUndo);
+		_userList.clear();
+		_userList.addAll(_userListForUndo);
 		_userListEmitter.add(_userList);
 	}
 
