@@ -1,5 +1,5 @@
-import 'package:architecture/UserGalleryFragment.dart';
-import 'package:architecture/UserStorageFragment.dart';
+import 'package:architecture/screens/user_gallery/UserGalleryFragment.dart';
+import 'package:architecture/screens/user_storage/UserStorageFragment.dart';
 import 'package:flutter/material.dart';
 
 class HomeRoute extends StatefulWidget {

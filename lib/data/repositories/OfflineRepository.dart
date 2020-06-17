@@ -1,6 +1,6 @@
-import 'package:architecture/AppDatabase.dart';
-import 'package:architecture/UserDbModel.dart';
-import 'package:architecture/UsersResponse.dart';
+import 'package:architecture/data/db/AppDatabase.dart';
+import 'package:architecture/data/db/models/UserDbModel.dart';
+import 'package:architecture/data/network/models/UsersResponse.dart';
 
 class OfflineRepository {
 

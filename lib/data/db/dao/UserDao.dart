@@ -1,4 +1,4 @@
-import 'package:architecture/UserDbModel.dart';
+import 'package:architecture/data/db/models/UserDbModel.dart';
 import 'package:floor/floor.dart';
 
 @dao

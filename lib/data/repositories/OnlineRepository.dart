@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:architecture/UserAPI.dart';
-import 'package:architecture/UsersResponse.dart';
+import 'package:architecture/data/network/UserAPI.dart';
+import 'package:architecture/data/network/models/UsersResponse.dart';
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 

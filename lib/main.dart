@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'HomeRoute.dart';
+import 'screens/home/HomeRoute.dart';
 
 void main() {
 	runApp(MyApp());

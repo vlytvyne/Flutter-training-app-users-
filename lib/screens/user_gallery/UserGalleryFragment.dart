@@ -1,13 +1,13 @@
-import 'package:architecture/Mixins.dart';
-import 'package:architecture/UserDetailsRoute.dart';
+import 'package:architecture/utils/Mixins.dart';
+import 'package:architecture/screens/user_details/UserDetailsRoute.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'SafeStreamBuilder.dart';
-import 'UserTile.dart';
+import '../../widgets/SafeStreamBuilder.dart';
+import '../../widgets/UserTile.dart';
 import 'UserGalleryVM.dart';
-import 'UsersResponse.dart';
+import '../../data/network/models/UsersResponse.dart';
 
 class UserGalleryFragment extends StatefulWidget {
 

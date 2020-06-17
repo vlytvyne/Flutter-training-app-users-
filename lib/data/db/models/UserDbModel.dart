@@ -1,5 +1,5 @@
 import 'package:floor/floor.dart';
-import 'UsersResponse.dart';
+import '../../network/models/UsersResponse.dart';
 
 @Entity(tableName: 'Users', primaryKeys: ['firstName', 'lastName'])
 class UserDbModel {

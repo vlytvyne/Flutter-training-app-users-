@@ -1,12 +1,12 @@
-import 'package:architecture/Mixins.dart';
-import 'package:architecture/UserStorageVM.dart';
+import 'package:architecture/utils/Mixins.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'SafeStreamBuilder.dart';
-import 'UserDetailsRoute.dart';
-import 'UserTile.dart';
-import 'UsersResponse.dart';
+import '../../widgets/SafeStreamBuilder.dart';
+import '../user_details/UserDetailsRoute.dart';
+import '../../widgets/UserTile.dart';
+import '../../data/network/models/UsersResponse.dart';
+import 'UserStorageVM.dart';
 
 class UserStorageFragment extends StatefulWidget {
 

@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import 'UserDetailsRoute.dart';
-import 'UsersResponse.dart';
+import '../screens/user_details/UserDetailsRoute.dart';
+import '../data/network/models/UsersResponse.dart';
 
 class UserTile extends StatelessWidget {
 

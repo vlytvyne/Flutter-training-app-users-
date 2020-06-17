@@ -1,4 +1,4 @@
-import 'package:architecture/UsersResponse.dart';
+import 'package:architecture/data/network/models/UsersResponse.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 

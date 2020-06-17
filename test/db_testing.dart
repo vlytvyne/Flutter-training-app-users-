@@ -1,5 +1,5 @@
-import 'package:architecture/OfflineRepository.dart';
-import 'package:architecture/UsersResponse.dart';
+import 'package:architecture/data/network/models/UsersResponse.dart';
+import 'package:architecture/data/repositories/OfflineRepository.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

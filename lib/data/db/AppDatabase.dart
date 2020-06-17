@@ -1,7 +1,7 @@
 // required package imports
 import 'dart:async';
-import 'package:architecture/UserDao.dart';
-import 'package:architecture/UserDbModel.dart';
+import 'package:architecture/data/db/dao/UserDao.dart';
+import 'package:architecture/data/db/models/UserDbModel.dart';
 import 'package:floor/floor.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 

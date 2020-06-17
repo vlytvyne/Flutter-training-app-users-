@@ -1,7 +1,7 @@
-import 'package:architecture/OfflineRepository.dart';
+import 'package:architecture/data/repositories/OfflineRepository.dart';
 import 'package:rxdart/rxdart.dart';
-import 'OnlineRepository.dart';
-import 'UsersResponse.dart';
+import '../../data/repositories/OnlineRepository.dart';
+import '../../data/network/models/UsersResponse.dart';
 
 class UserGalleryVM {
 
