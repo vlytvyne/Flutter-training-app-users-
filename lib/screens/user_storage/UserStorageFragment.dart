@@ -102,4 +102,10 @@ class _UserStorageFragmentState extends State<UserStorageFragment> with AfterLay
 			)
 		);
 	}
+
+	@override
+	void dispose() {
+		_vm.dispose();
+		super.dispose();
+	}
 }

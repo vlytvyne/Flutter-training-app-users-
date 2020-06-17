@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:architecture/utils/Mixins.dart';
 import 'package:architecture/screens/user_details/UserDetailsRoute.dart';
 import 'package:architecture/widgets/SearchField.dart';
@@ -19,11 +21,11 @@ class UserGalleryFragment extends StatefulWidget {
 }
 
 class _UserGalleryFragmentState extends State<UserGalleryFragment> with
-		AutomaticKeepAliveClientMixin<UserGalleryFragment>,
 		AfterLayoutMixin<UserGalleryFragment> {
 
 	final _vm = UserGalleryVM();
 	final _scrollController = ScrollController();
+	final streamSubscriptions = <StreamSubscription>[];
 
 	bool get isScrolledToEnd => _scrollController.position.pixels >= _scrollController.position.maxScrollExtent;
 
@@ -39,11 +41,7 @@ class _UserGalleryFragmentState extends State<UserGalleryFragment> with
 	}
 
 	@override
-	bool get wantKeepAlive => true;
-
-	@override
 	Widget build(BuildContext context) {
-		super.build(context);
 		return Scaffold(
 			appBar: buildAppBar(),
 			floatingActionButton: buildFAB(),
@@ -76,8 +74,8 @@ class _UserGalleryFragmentState extends State<UserGalleryFragment> with
 				),
 			);
 
-	void registerSnackBarListeners(BuildContext context) {
-	  _vm.refreshEventStream.listen(
+	void registerSnackBarListeners(context) {
+		final subscription1 = _vm.refreshEventStream.listen(
       (_) => Scaffold.of(context).showSnackBar(
 	      SnackBar(
 	        duration: Duration(seconds: 2),
@@ -85,7 +83,7 @@ class _UserGalleryFragmentState extends State<UserGalleryFragment> with
         )
       )
 	  );
-	  _vm.usersSavedEventStream.listen(
+	  final subscription2 = _vm.usersSavedEventStream.listen(
 		  (amount) => Scaffold.of(context).showSnackBar(
 			  SnackBar(
 				  duration: Duration(seconds: 2),
@@ -93,6 +91,8 @@ class _UserGalleryFragmentState extends State<UserGalleryFragment> with
 			  )
 		  )
     );
+	  streamSubscriptions.add(subscription1);
+	  streamSubscriptions.add(subscription2);
   }
 
 	Column buildListWithSearch(context) {
@@ -144,6 +144,7 @@ class _UserGalleryFragmentState extends State<UserGalleryFragment> with
 
 	@override
 	void dispose() {
+		streamSubscriptions.forEach((element) {element.cancel();});
 		_vm.dispose();
 		super.dispose();
 	}
