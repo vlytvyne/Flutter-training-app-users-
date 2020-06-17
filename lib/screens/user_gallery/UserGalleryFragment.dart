@@ -50,7 +50,7 @@ class _UserGalleryFragmentState extends State<UserGalleryFragment> with
 				  registerSnackBarListeners(context);
 			  	return Stack(
 					  children: <Widget>[
-						  buildListWithSearch(context),
+						  buildUsersListWithRefresh(context),
 						  buildLoadingIndicator()
 					  ],
 				  );
@@ -66,7 +66,7 @@ class _UserGalleryFragmentState extends State<UserGalleryFragment> with
 
 	Widget buildFAB() =>
 			SafeStreamBuilder<List<User>>(
-				stream: _vm.usersListStream,
+				stream: _vm.userListStream,
 				builder: (context, snapshot) => FloatingActionButton.extended(
 					label: Text('Save ${snapshot.data.where((user) => user.isSelected).length}'),
 					onPressed: _vm.saveSelectedUsers,
@@ -95,33 +95,24 @@ class _UserGalleryFragmentState extends State<UserGalleryFragment> with
 	  streamSubscriptions.add(subscription2);
   }
 
-	Column buildListWithSearch(context) {
-		return Column(
-			children: <Widget>[
-				SearchField(
-					onTextChanged: _vm.setSearchQuery,
-				),
-				Expanded(
-					child: SafeStreamBuilder<List<User>>(
-						stream: _vm.usersListStream,
-						builder: (context, snapshot) => buildUsersList(context, snapshot.data),
-					),
-				),
-			],
-		);
-	}
 
-	Widget buildUsersList(context, List<User> list) =>
+	Widget buildUsersListWithRefresh(context) =>
 			RefreshIndicator(
-				child: ListView.builder(
-					controller: _scrollController,
-					itemCount: list.length,
-					itemBuilder: (context, index) => buildUserTile(context, list[index]),
+				child: SafeStreamBuilder<List<User>>(
+					stream: _vm.userListStream,
+					builder: (context, snapshot) => buildUsersList(context, snapshot.data),
 				),
 				onRefresh: _vm.refreshUsers,
 			);
 
-	buildUserTile(context, User user) =>
+	Widget buildUsersList(context, List<User> list) =>
+			ListView.builder(
+				controller: _scrollController,
+				itemCount: list.length,
+				itemBuilder: (context, index) => buildUserTile(context, list[index]),
+			);
+
+	Widget buildUserTile(context, User user) =>
 			UserTile(
 					user,
 					hasSelectionOption: true,

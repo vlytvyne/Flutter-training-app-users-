@@ -4,6 +4,7 @@ import 'package:architecture/screens/user_details/UserDetailsRoute.dart';
 import 'package:architecture/utils/Mixins.dart';
 import 'package:architecture/widgets/ModelSheetUserFilter.dart';
 import 'package:architecture/widgets/SafeStreamBuilder.dart';
+import 'package:architecture/widgets/SearchField.dart';
 import 'package:architecture/widgets/UserTile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -49,36 +50,33 @@ class _UserStorageFragmentState extends State<UserStorageFragment> with AfterLay
 			  ],
 		  );
 
-  Widget buildModelSheet(context) =>
-		  SafeStreamBuilder<UserFilter>(
-			  stream: _vm.filterStream,
-			  builder: (context, snapshot) => ModelSheetUserFilter(
-				  filter: snapshot.data,
-				  onApply: (filter) {
-				    Navigator.of(context).pop();
-				    _vm.setFilter(filter);
-				  },
-			  ),
-		  );
-
 	Widget buildBody() =>
 			Stack(
 				children: <Widget>[
-					SafeStreamBuilder<List<User>>(
-						stream: _vm.userListStream,
-						builder: (context, snapshot) => snapshot.data.length != 0 ?
-							buildUsersList(snapshot.data)
-								:
-							Center(child: Text('No users'))
-					),
-					SafeStreamBuilder<bool>(
-							stream: _vm.loadingStream,
-							builder: (context, snapshot) => Visibility(visible: snapshot.data, child: LinearProgressIndicator(),)
-					)
+					buildListWithSearch(context),
+					buildLoadingIndicator(),
 				]
 			);
 
-	Widget buildUsersList(List<User> list) =>
+	Widget buildListWithSearch(context) =>
+			Column(
+				children: <Widget>[
+					SearchField(
+						onTextChanged: _vm.setSearchQuery,
+					),
+					Expanded(
+						child: SafeStreamBuilder<List<User>>(
+							stream: _vm.userListStream,
+							builder: (context, snapshot) => snapshot.data.length != 0 ?
+								buildUsersList(context, snapshot.data)
+										:
+								Center(child: Text('No users')),
+						),
+					),
+				],
+			);
+
+	Widget buildUsersList(context, List<User> list) =>
 			ListView.builder(
 				itemCount: list.length,
 				itemBuilder: (context, index) => buildUserTile(context, list[index]),
@@ -132,6 +130,24 @@ class _UserStorageFragmentState extends State<UserStorageFragment> with AfterLay
 			)
 		);
 	}
+
+	Widget buildLoadingIndicator() =>
+			SafeStreamBuilder<bool>(
+				stream: _vm.loadingStream,
+				builder: (context, snapshot) => Visibility(visible: snapshot.data, child: LinearProgressIndicator(),)
+			);
+
+	Widget buildModelSheet(context) =>
+			SafeStreamBuilder<UserFilter>(
+				stream: _vm.filterStream,
+				builder: (context, snapshot) => ModelSheetUserFilter(
+					filter: snapshot.data,
+					onApply: (filter) {
+						Navigator.of(context).pop();
+						_vm.setFilter(filter);
+					},
+				),
+			);
 
 	@override
 	void dispose() {

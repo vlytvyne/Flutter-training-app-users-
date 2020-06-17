@@ -1,6 +1,7 @@
 import 'package:architecture/data/filters/UserFilter.dart';
 import 'package:architecture/data/repositories/OfflineRepository.dart';
 import 'package:architecture/data/network/models/UsersResponse.dart';
+import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
 class UserStorageVM {
@@ -8,6 +9,8 @@ class UserStorageVM {
 	final _userList = <User>[];
 	final _userListForUndo = <User>[];
 	static UserFilter _filter = UserFilter(true, true, true);
+
+	String _searchQuery = '';
 
 	User _userForUndo;
 
@@ -25,7 +28,7 @@ class UserStorageVM {
 		_loadingEmitter.add(true);
 		final localUsers = await OfflineRepository().fetchUsers(filter: _filter);
 		_userList.addAll(localUsers);
-		_userListEmitter.add(_userList);
+		_userListEmitter.add(_filterUsersByQuery());
 		_loadingEmitter.add(false);
 	}
 
@@ -35,14 +38,14 @@ class UserStorageVM {
 		_userListForUndo.clear();
 		_userListForUndo.addAll(_userList);
 		_userList.remove(user);
-		_userListEmitter.add(_userList);
+		_userListEmitter.add(_filterUsersByQuery());
 	}
 	
 	undoLastDelete() {
 		OfflineRepository().saveUser(_userForUndo);
 		_userList.clear();
 		_userList.addAll(_userListForUndo);
-		_userListEmitter.add(_userList);
+		_userListEmitter.add(_filterUsersByQuery());
 	}
 
 	setFilter(UserFilter filter) {
@@ -50,6 +53,22 @@ class UserStorageVM {
 		_filterEmitter.add(_filter);
 		loadUsers();
 	}
+
+	setSearchQuery(String query) {
+		_searchQuery = query;
+		_userListEmitter.add(_filterUsersByQuery());
+	}
+
+	List<User> _filterUsersByQuery() {
+		if (_searchQuery.isEmpty) {
+			return _userList;
+		} else {
+			return _userList.where(_isSearchQueryApplyToUser).toList();
+		}
+	}
+
+	bool _isSearchQueryApplyToUser(User user) =>
+		user.name.fullname.toLowerCase().startsWith(_searchQuery.toLowerCase());
 
 	dispose() {
 		_userListEmitter.close();

@@ -10,10 +10,8 @@ class UserGalleryVM {
 	bool _preventLoading = false;
 	final List<User> _userList = [];
 
-	String _searchQuery;
-
 	final _userListEmitter = BehaviorSubject<List<User>>();
-	Stream<List<User>> get usersListStream => _userListEmitter.stream;
+	Stream<List<User>> get userListStream => _userListEmitter.stream;
 
 	final _loadingEmitter = BehaviorSubject<bool>();
 	Stream<bool> get loadingStream => _loadingEmitter.stream;
@@ -55,26 +53,6 @@ class UserGalleryVM {
 	setSelected(User user, bool isFavorite) {
 		_userList.where((element) => element == user).first.isSelected = isFavorite;
 		_userListEmitter.add(_userList);
-	}
-
-	setSearchQuery(String query) {
-		_searchQuery = query;
-		if (query.isEmpty) {
-			_preventLoading = false;
-			refreshUsers();
-		} else {
-			_preventLoading = true;
-			_filterUsers();
-		}
-	}
-
-	_filterUsers() {
-		final filteredList = _userList.where(
-			(user) => user.name.fullname.toLowerCase().startsWith(
-					_searchQuery.toLowerCase()
-			)
-		).toList();
-		_userListEmitter.add(filteredList);
 	}
 	
 	saveSelectedUsers() {
