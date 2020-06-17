@@ -1,12 +1,9 @@
-import 'dart:ffi';
-
-import 'dart:ffi';
-
+import 'package:architecture/OfflineRepository.dart';
 import 'package:rxdart/rxdart.dart';
 import 'OnlineRepository.dart';
 import 'UsersResponse.dart';
 
-class UsersListVM {
+class UserGalleryVM {
 
 	int _nextPage = 1;
 
@@ -21,8 +18,11 @@ class UsersListVM {
 	final _loadingEmitter = BehaviorSubject<bool>();
 	Stream<bool> get loadingStream => _loadingEmitter.stream;
 
-	final _refreshEventEmitter = BehaviorSubject<Void>();
-	Stream<Void> get refreshEventStream => _refreshEventEmitter.stream;
+	final _refreshEventEmitter = BehaviorSubject<void>();
+	Stream<void> get refreshEventStream => _refreshEventEmitter.stream;
+
+	final _usersSavedEventEmitter = BehaviorSubject<int>();
+	Stream<int> get usersSavedEventStream => _usersSavedEventEmitter.stream;
 
 	Future loadUsers() async {
 		if (_preventLoading) {
@@ -52,13 +52,12 @@ class UsersListVM {
 		_refreshEventEmitter.add(null);
 	}
 
-	setFavorite(UserModel user, bool isFavorite) {
-		_usersList.where((element) => element == user).first.isFavorite = isFavorite;
+	setSelected(UserModel user, bool isFavorite) {
+		_usersList.where((element) => element == user).first.isSelected = isFavorite;
 		_userListEmitter.add(_usersList);
 	}
 
 	setSearchQuery(String query) {
-		print("new query $query");
 		_searchQuery = query;
 		if (query.isEmpty) {
 			_preventLoading = false;
@@ -84,10 +83,24 @@ class UsersListVM {
 		_usersList.remove(user);
 		_userListEmitter.add(_usersList);
 	}
+	
+	saveSelectedUsers() {
+		final usersToSave = _usersList.where((user) => user.isSelected);
+		if (usersToSave.length == 0) {
+			return;
+		}
+		usersToSave.forEach((user) {
+			OfflineRepository().saveUser(user);
+		});
+		_usersSavedEventEmitter.add(usersToSave.length);
+		_usersList.forEach((user) => user.isSelected = false);
+		_userListEmitter.add(_usersList);
+	}
 
 	dispose() {
 		_userListEmitter.close();
 		_loadingEmitter.close();
 		_refreshEventEmitter.close();
+		_usersSavedEventEmitter.close();
 	}
 }

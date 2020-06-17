@@ -6,22 +6,22 @@ import 'package:flutter/material.dart';
 
 import 'SafeStreamBuilder.dart';
 import 'UserTile.dart';
-import 'UsersListVM.dart';
+import 'UserGalleryVM.dart';
 import 'UsersResponse.dart';
 
-class UsersListFragment extends StatefulWidget {
+class UserGalleryFragment extends StatefulWidget {
 
-	UsersListFragment({Key key}) : super(key: key);
+	UserGalleryFragment({Key key}) : super(key: key);
 
 	@override
-	_UsersListFragmentState createState() => _UsersListFragmentState();
+	_UserGalleryFragmentState createState() => _UserGalleryFragmentState();
 }
 
-class _UsersListFragmentState extends State<UsersListFragment> with
-		AutomaticKeepAliveClientMixin<UsersListFragment>,
-		AfterLayoutMixin<UsersListFragment> {
+class _UserGalleryFragmentState extends State<UserGalleryFragment> with
+		AutomaticKeepAliveClientMixin<UserGalleryFragment>,
+		AfterLayoutMixin<UserGalleryFragment> {
 
-	final _vm = UsersListVM();
+	final _vm = UserGalleryVM();
 	final _scrollController = ScrollController();
 
 	bool get isScrolledToEnd => _scrollController.position.pixels >= _scrollController.position.maxScrollExtent;
@@ -40,17 +40,54 @@ class _UsersListFragmentState extends State<UsersListFragment> with
 	@override
 	Widget build(BuildContext context) {
 		super.build(context);
-		_vm.refreshEventStream.listen((_) => buildSnackbar(context).show(context));
-		return Stack(
-			children: <Widget>[
-				buildListWithSearch(),
-				SafeStreamBuilder(
-					stream: _vm.loadingStream,
-					builder: (context, snapshot) => Visibility(visible: snapshot.data, child: LinearProgressIndicator(),)
-				)
-			],
+		return Scaffold(
+			floatingActionButton: buildFAB(),
+		  body: Builder(
+			  builder: (context) {
+				  registerSnackBarListeners(context);
+			  	return Stack(
+					  children: <Widget>[
+						  buildListWithSearch(),
+						  SafeStreamBuilder<bool>(
+							  stream: _vm.loadingStream,
+							  builder: (context, snapshot) => Visibility(visible: snapshot.data, child: LinearProgressIndicator(),)
+						  )
+					  ],
+				  );
+			  },
+		  ),
 		);
 	}
+
+	Widget buildFAB() {
+	  return SafeStreamBuilder<List<UserModel>>(
+		  stream: _vm.usersListStream,
+	    builder: (context, snapshot) => FloatingActionButton.extended(
+				label: Text('Save ${snapshot.data.where((user) => user.isSelected).length}'),
+				onPressed: _vm.saveSelectedUsers,
+				icon: Icon(Icons.save),
+			),
+	  );
+	}
+
+	void registerSnackBarListeners(BuildContext context) {
+	  _vm.refreshEventStream.listen(
+      (_) => Scaffold.of(context).showSnackBar(
+	      SnackBar(
+	        duration: Duration(seconds: 2),
+	        content: Text('Users list has been refreshed'),
+        )
+      )
+	  );
+	  _vm.usersSavedEventStream.listen(
+		  (amount) => Scaffold.of(context).showSnackBar(
+			  SnackBar(
+				  duration: Duration(seconds: 2),
+				  content: Text('$amount users have been saved'),
+			  )
+		  )
+    );
+	  }
 
 	Column buildListWithSearch() {
 	  return Column(
@@ -59,7 +96,7 @@ class _UsersListFragmentState extends State<UsersListFragment> with
 				  onTextChanged: _vm.setSearchQuery,
 			  ),
 	  		Expanded(
-	  		  child: SafeStreamBuilder(
+	  		  child: SafeStreamBuilder<List<UserModel>>(
 	  		  	stream: _vm.usersListStream,
 	  		  	builder: (context, snapshot) => buildUsersList(snapshot.data),
 	  		  ),
@@ -98,7 +135,7 @@ class _UsersListFragmentState extends State<UsersListFragment> with
 				child: UserTile(
 					user,
 					() => onTileClick(context, user),
-					(checked) => _vm.setFavorite(user, checked)
+					(checked) => _vm.setSelected(user, checked)
 				),
 				onDismissed: (_) => _vm.deleteUser(user),
 			);

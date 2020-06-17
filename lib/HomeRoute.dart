@@ -1,10 +1,10 @@
-import 'package:architecture/UsersListFragment.dart';
+import 'package:architecture/UserGallery.dart';
 import 'package:flutter/material.dart';
 
 class HomeRoute extends StatefulWidget {
 
 	final fragments = {
-		0: UsersListFragment(),
+		0: UserGalleryFragment(),
 		1: Text("Page 1"),
 		2: Text("Page 2"),
 	};
@@ -42,8 +42,8 @@ class _HomeRouteState extends State<HomeRoute> {
 					padding: EdgeInsets.zero,
 					children: <Widget> [
 						buildDrawerHeader(context),
-						buildDrawerButton(context, "Users", 0),
-						buildDrawerButton(context, "page 1", 1),
+						buildDrawerButton(context, "User Gallery", 0),
+						buildDrawerButton(context, "User Storage", 1),
 						buildDrawerButton(context, "page 2", 2),
 					],
 				),

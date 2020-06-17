@@ -39,7 +39,7 @@ class UserModel {
 	final String phone;
 
 	@JsonKey(defaultValue: false)
-	bool isFavorite;
+	bool isSelected;
 
 	UserModel(this.name, this.picture, this.email, this.gender, this.phone);
 

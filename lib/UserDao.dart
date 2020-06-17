@@ -7,7 +7,7 @@ abstract class UserDao {
 	@Query('SELECT * FROM Users')
 	Future<List<UserDbModel>> fetchAllUsers();
 
-	@insert
+	@Insert(onConflict: OnConflictStrategy.ignore)
 	Future<void> insertUser(UserDbModel user);
 
 }

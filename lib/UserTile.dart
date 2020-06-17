@@ -26,7 +26,7 @@ class UserTile extends StatelessWidget {
 				onTap: onClick,
 				leading: buildAvatar(),
 				trailing: Checkbox(
-					value: user.isFavorite,
+					value: user.isSelected,
 					onChanged: onChecked,
 				),
 			);
