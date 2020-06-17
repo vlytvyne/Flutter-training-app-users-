@@ -8,9 +8,10 @@ class UserTile extends StatelessWidget {
 
 	final UserModel user;
 	final VoidCallback onClick;
-	final Function(bool) onChecked;
+	final Function(bool) onSelected;
+  final hasSelectionOption;
 
-	const UserTile(this.user, this.onClick, this.onChecked, {Key key}) : super(key: key);
+	const UserTile(this.user, {Key key, this.onClick, this.hasSelectionOption: false, this.onSelected,}) : super(key: key);
 
 	@override
 	Widget build(BuildContext context) =>
@@ -23,17 +24,19 @@ class UserTile extends StatelessWidget {
 					user.email,
 					style: TextStyle(fontSize: 18),
 				),
-				onTap: onClick,
-				leading: buildAvatar(),
-				trailing: Checkbox(
+				onTap: onClick ?? () {},
+				leading: buildAvatar(context),
+				trailing: hasSelectionOption ?
+				Checkbox(
 					value: user.isSelected,
-					onChanged: onChecked,
-				),
+					onChanged: onSelected,
+				) :
+				SizedBox.shrink(),
 			);
 
-	Widget buildAvatar() =>
+	Widget buildAvatar(context) =>
 			Hero(
-				tag: user.name.fullname,
+				tag: user.name.fullname + context.hashCode.toString(),
 				child: ClipOval(
 					child: SizedBox(
 						height: 40,

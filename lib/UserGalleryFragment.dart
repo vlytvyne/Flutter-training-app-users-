@@ -47,7 +47,7 @@ class _UserGalleryFragmentState extends State<UserGalleryFragment> with
 				  registerSnackBarListeners(context);
 			  	return Stack(
 					  children: <Widget>[
-						  buildListWithSearch(),
+						  buildListWithSearch(context),
 						  SafeStreamBuilder<bool>(
 							  stream: _vm.loadingStream,
 							  builder: (context, snapshot) => Visibility(visible: snapshot.data, child: LinearProgressIndicator(),)
@@ -89,7 +89,7 @@ class _UserGalleryFragmentState extends State<UserGalleryFragment> with
     );
 	  }
 
-	Column buildListWithSearch() {
+	Column buildListWithSearch(context) {
 	  return Column(
 	  	children: <Widget>[
 	  		SearchField(
@@ -98,46 +98,29 @@ class _UserGalleryFragmentState extends State<UserGalleryFragment> with
 	  		Expanded(
 	  		  child: SafeStreamBuilder<List<UserModel>>(
 	  		  	stream: _vm.usersListStream,
-	  		  	builder: (context, snapshot) => buildUsersList(snapshot.data),
+	  		  	builder: (context, snapshot) => buildUsersList(context, snapshot.data),
 	  		  ),
 	  		),
 	  	],
 	  );
 	}
 
-	Widget buildUsersList(List<UserModel> list) =>
+	Widget buildUsersList(context, List<UserModel> list) =>
 			RefreshIndicator(
 				child: ListView.builder(
 					controller: _scrollController,
 					itemCount: list.length,
-					itemBuilder: (context, index) => buildUserTile(list[index]),
+					itemBuilder: (context, index) => buildUserTile(context, list[index]),
 				),
 				onRefresh: _vm.refreshUsers,
 			);
 
-	buildUserTile(UserModel user) =>
-			Dismissible(
-				key: ValueKey(user.name.fullname),
-				direction: DismissDirection.endToStart,
-				background: Container(
-					color: Colors.red[600],
-					child: Align(
-						alignment: Alignment.centerRight,
-						child: Padding(
-							padding: const EdgeInsets.only(right: 24),
-							child: Icon(
-								Icons.delete,
-								color: Colors.white,
-							),
-						),
-					),
-				),
-				child: UserTile(
-					user,
-					() => onTileClick(context, user),
-					(checked) => _vm.setSelected(user, checked)
-				),
-				onDismissed: (_) => _vm.deleteUser(user),
+	buildUserTile(context, UserModel user) =>
+			UserTile(
+				user,
+				hasSelectionOption: true,
+				onClick: () => onTileClick(context, user),
+				onSelected: (checked) => _vm.setSelected(user, checked)
 			);
 
 	Flushbar buildSnackbar(context) =>

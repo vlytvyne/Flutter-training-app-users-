@@ -107,6 +107,18 @@ class _$UserDao extends UserDao {
                   'email': item.email,
                   'gender': item.gender,
                   'phone': item.phone
+                }),
+        _userDbModelDeletionAdapter = DeletionAdapter(
+            database,
+            'Users',
+            ['firstName', 'lastName'],
+            (UserDbModel item) => <String, dynamic>{
+                  'firstName': item.firstName,
+                  'lastName': item.lastName,
+                  'largePictureUrl': item.largePictureUrl,
+                  'email': item.email,
+                  'gender': item.gender,
+                  'phone': item.phone
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -125,6 +137,8 @@ class _$UserDao extends UserDao {
 
   final InsertionAdapter<UserDbModel> _userDbModelInsertionAdapter;
 
+  final DeletionAdapter<UserDbModel> _userDbModelDeletionAdapter;
+
   @override
   Future<List<UserDbModel>> fetchAllUsers() async {
     return _queryAdapter.queryList('SELECT * FROM Users', mapper: _usersMapper);
@@ -133,5 +147,16 @@ class _$UserDao extends UserDao {
   @override
   Future<void> insertUser(UserDbModel user) async {
     await _userDbModelInsertionAdapter.insert(user, OnConflictStrategy.ignore);
+  }
+
+  @override
+  Future<void> insertUsers(List<UserDbModel> users) async {
+    await _userDbModelInsertionAdapter.insertList(
+        users, OnConflictStrategy.ignore);
+  }
+
+  @override
+  Future<void> deleteUser(UserDbModel user) async {
+    await _userDbModelDeletionAdapter.delete(user);
   }
 }

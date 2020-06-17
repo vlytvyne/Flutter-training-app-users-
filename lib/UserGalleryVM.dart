@@ -8,7 +8,7 @@ class UserGalleryVM {
 	int _nextPage = 1;
 
 	bool _preventLoading = false;
-	List<UserModel> _usersList = [];
+	List<UserModel> _userList = [];
 
 	String _searchQuery;
 
@@ -38,8 +38,8 @@ class UserGalleryVM {
 	Future _performLoading() async {
 		var response = await OnlineRepository().getRandomUser(_nextPage);
 		_nextPage++;
-		_usersList.addAll(response.users);
-		_userListEmitter.add(_usersList);
+		_userList.addAll(response.users);
+		_userListEmitter.add(_userList);
 	}
 
 	Future refreshUsers() async {
@@ -47,14 +47,14 @@ class UserGalleryVM {
 			return;
 		}
 		_nextPage = 1;
-		_usersList.clear();
+		_userList.clear();
 		await loadUsers();
 		_refreshEventEmitter.add(null);
 	}
 
 	setSelected(UserModel user, bool isFavorite) {
-		_usersList.where((element) => element == user).first.isSelected = isFavorite;
-		_userListEmitter.add(_usersList);
+		_userList.where((element) => element == user).first.isSelected = isFavorite;
+		_userListEmitter.add(_userList);
 	}
 
 	setSearchQuery(String query) {
@@ -69,32 +69,25 @@ class UserGalleryVM {
 	}
 
 	_filterUsers() {
-		final filteredList = _usersList.where(
+		final filteredList = _userList.where(
 			(user) => user.name.fullname.toLowerCase().startsWith(
 					_searchQuery.toLowerCase()
 			)
 		).toList();
-		_usersList.clear();
-		_usersList.addAll(filteredList);
-		_userListEmitter.add(_usersList);
-	}
-
-	deleteUser(UserModel user) {
-		_usersList.remove(user);
-		_userListEmitter.add(_usersList);
+		_userList.clear();
+		_userList.addAll(filteredList);
+		_userListEmitter.add(_userList);
 	}
 	
 	saveSelectedUsers() {
-		final usersToSave = _usersList.where((user) => user.isSelected);
+		final usersToSave = _userList.where((user) => user.isSelected);
 		if (usersToSave.length == 0) {
 			return;
 		}
-		usersToSave.forEach((user) {
-			OfflineRepository().saveUser(user);
-		});
+		OfflineRepository().saveUsers(usersToSave);
 		_usersSavedEventEmitter.add(usersToSave.length);
-		_usersList.forEach((user) => user.isSelected = false);
-		_userListEmitter.add(_usersList);
+		_userList.forEach((user) => user.isSelected = false);
+		_userListEmitter.add(_userList);
 	}
 
 	dispose() {

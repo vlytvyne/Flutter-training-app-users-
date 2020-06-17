@@ -1,11 +1,12 @@
-import 'package:architecture/UserGallery.dart';
+import 'package:architecture/UserGalleryFragment.dart';
+import 'package:architecture/UserStorageFragment.dart';
 import 'package:flutter/material.dart';
 
 class HomeRoute extends StatefulWidget {
 
 	final fragments = {
 		0: UserGalleryFragment(),
-		1: Text("Page 1"),
+		1: UserStorageFragment(),
 		2: Text("Page 2"),
 	};
 

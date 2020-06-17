@@ -24,10 +24,20 @@ class OfflineRepository {
 		return db.userDao.insertUser(UserDbModel.fromUserModel(user));
 	}
 
+	Future<void> saveUsers(List<UserModel> users) async {
+		final db = await _getDb();
+		return db.userDao.insertUsers(users.map((user) => UserDbModel.fromUserModel(user)).toList());
+	}
+
 	Future<List<UserModel>> fetchAllUsers() async {
 		final db = await _getDb();
 		final userDbModels = await db.userDao.fetchAllUsers();
-		return userDbModels.map((e) => e.toUserModel());
+		return userDbModels.map((e) => e.toUserModel()).toList();
+	}
+
+	Future<void> deleteUser(UserModel user) async {
+		final db = await _getDb();
+		db.userDao.deleteUser(UserDbModel.fromUserModel(user));
 	}
 
 }

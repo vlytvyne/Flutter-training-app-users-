@@ -10,4 +10,10 @@ abstract class UserDao {
 	@Insert(onConflict: OnConflictStrategy.ignore)
 	Future<void> insertUser(UserDbModel user);
 
+	@Insert(onConflict: OnConflictStrategy.ignore)
+	Future<void> insertUsers(List<UserDbModel> users);
+
+	@delete
+	Future<void> deleteUser(UserDbModel user);
+
 }
