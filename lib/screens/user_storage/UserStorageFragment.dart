@@ -25,18 +25,27 @@ class _UserStorageFragmentState extends State<UserStorageFragment> with AfterLay
 
   @override
   Widget build(BuildContext context) {
-  	return Stack(
-		  children: <Widget>[
-			  SafeStreamBuilder<List<User>>(
-				  stream: _vm.userListStream,
-				  builder: (context, snapshot) => buildUsersList(snapshot.data),
-			  ),
-			  SafeStreamBuilder<bool>(
-				  stream: _vm.loadingStream,
-				  builder: (context, snapshot) => Visibility(visible: snapshot.data, child: LinearProgressIndicator(),)
-			  )
-		  ],
-	  );
+  	return Scaffold(
+		  appBar: buildAppBar(),
+  	  body: Stack(
+			  children: <Widget>[
+				  SafeStreamBuilder<List<User>>(
+					  stream: _vm.userListStream,
+					  builder: (context, snapshot) => buildUsersList(snapshot.data),
+				  ),
+				  SafeStreamBuilder<bool>(
+					  stream: _vm.loadingStream,
+					  builder: (context, snapshot) => Visibility(visible: snapshot.data, child: LinearProgressIndicator(),)
+				  )
+			  ],
+		  ),
+  	);
+  }
+
+  AppBar buildAppBar() {
+    return AppBar(
+			  title: Text('Saved users'),
+		  );
   }
 
 	Widget buildUsersList(List<User> list) =>

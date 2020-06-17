@@ -74,9 +74,7 @@ class UserGalleryVM {
 					_searchQuery.toLowerCase()
 			)
 		).toList();
-		_userList.clear();
-		_userList.addAll(filteredList);
-		_userListEmitter.add(_userList);
+		_userListEmitter.add(filteredList);
 	}
 	
 	saveSelectedUsers() {

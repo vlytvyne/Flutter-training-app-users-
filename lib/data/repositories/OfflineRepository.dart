@@ -14,7 +14,7 @@ class OfflineRepository {
 
 	Future<AppDatabase> _getDb() async {
 		if (_dbInstance == null) {
-			_dbInstance = await $FloorAppDatabase.inMemoryDatabaseBuilder().build(); //TODO: change to real db
+			_dbInstance = await $FloorAppDatabase.databaseBuilder('app_database').build();
 		}
 		return _dbInstance;
 	}

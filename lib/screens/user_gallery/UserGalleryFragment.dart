@@ -45,6 +45,7 @@ class _UserGalleryFragmentState extends State<UserGalleryFragment> with
 	Widget build(BuildContext context) {
 		super.build(context);
 		return Scaffold(
+			appBar: buildAppBar(),
 			floatingActionButton: buildFAB(),
 		  body: Builder(
 			  builder: (context) {
@@ -59,6 +60,11 @@ class _UserGalleryFragmentState extends State<UserGalleryFragment> with
 		  ),
 		);
 	}
+
+	AppBar buildAppBar() =>
+			AppBar(
+				title: Text('User gallery'),
+			);
 
 	Widget buildFAB() =>
 			SafeStreamBuilder<List<User>>(
