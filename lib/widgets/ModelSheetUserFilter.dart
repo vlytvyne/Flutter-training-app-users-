@@ -26,50 +26,50 @@ class _ModelSheetUserFilterState extends State<ModelSheetUserFilter> {
 						height: 300,
 						child: Column(
 							children: <Widget>[
-								buildFilterTitle(),
-								buildCheckbox(
-										widget.filter.showMen,
-										'Show men',
-												(value) => setState(() => widget.filter.showMen = value)
+								_buildFilterTitle(),
+								_buildCheckbox(
+									widget.filter.showMen,
+									'Show men',
+									(value) => setState(() => widget.filter.showMen = value)
 								),
-								buildCheckbox(
-										widget.filter.showWomen,
-										'Show women',
-												(value) => setState(() => widget.filter.showWomen = value)
+								_buildCheckbox(
+									widget.filter.showWomen,
+									'Show women',
+									(value) => setState(() => widget.filter.showWomen = value)
 								),
-								buildSwitch(
-										widget.filter.ascendingOrder,
-										'Ascending order',
-												(value) => setState(() => widget.filter.ascendingOrder = value)
+								_buildSwitch(
+									widget.filter.ascendingOrder,
+									'Ascending order',
+									(value) => setState(() => widget.filter.ascendingOrder = value)
 								),
-								buildApplyButton(context)
+								_buildApplyButton(context)
 							],
 						),
 					),
 				),
 			);
 
-	Align buildFilterTitle() =>
+	Align _buildFilterTitle() =>
 			Align(
 					alignment: Alignment.centerLeft,
 					child: Text('Filters', style: TextStyle(fontSize: 40),)
 			);
 
-	Widget buildCheckbox(value, title, onChanged) =>
+	Widget _buildCheckbox(value, title, onChanged) =>
 			CheckboxListTile(
 				value: value,
 				title: Text(title),
 				onChanged: onChanged,
 			);
 
-	Widget buildSwitch(value, title, onChanged) =>
+	Widget _buildSwitch(value, title, onChanged) =>
 			SwitchListTile(
 				title: Text(title),
 				value: value,
 				onChanged: onChanged,
 			);
 
-	Expanded buildApplyButton(BuildContext context) =>
+	Expanded _buildApplyButton(BuildContext context) =>
 			Expanded(
 				child: Align(
 					alignment: Alignment.bottomRight,

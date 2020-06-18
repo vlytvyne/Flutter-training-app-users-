@@ -13,33 +13,33 @@ class SettingsFragment extends StatelessWidget {
 	@override
   Widget build(BuildContext context) =>
 			Scaffold(
-		    appBar: buildAppBar(context),
-		    body: buildBody(context),
+		    appBar: _buildAppBar(context),
+		    body: _buildBody(context),
 	    );
 
-  Widget buildAppBar(context) =>
+  Widget _buildAppBar(context) =>
 		  AppBar(
 			  title: Text('Settings'),
 		  );
 
-	Widget buildBody(context) =>
+	Widget _buildBody(context) =>
 			SingleChildScrollView(
 			  child: Padding(
 			    padding: const EdgeInsets.symmetric(horizontal: 12),
 			    child: Column(
 			    	children: <Widget>[
-					    buildSettingTitle(context, 'Loaded users set'),
-					    buildUserSeedForm(context),
-			  		  buildSettingTitle(context, 'Platform'),
-			  		  buildPlatformToggle(context),
-					    buildSettingTitle(context, 'Color theme'),
-					    buildThemeColorSelect(context),
+					    _buildSettingTitle(context, 'Loaded users set'),
+					    _buildUserSeedForm(context),
+			  		  _buildSettingTitle(context, 'Platform'),
+			  		  _buildPlatformToggle(context),
+					    _buildSettingTitle(context, 'Color theme'),
+					    _buildThemeColorSelect(context),
 			    	],
 			    ),
 			  ),
 			);
 
-	Widget buildSettingTitle(context, title) =>
+	Widget _buildSettingTitle(context, title) =>
 			Padding(
 			  padding: const EdgeInsets.symmetric(vertical: 16),
 			  child: Align(
@@ -54,16 +54,16 @@ class SettingsFragment extends StatelessWidget {
 			  ),
 			);
 
-	_ChangeUserSeedForm buildUserSeedForm(context) =>
+	_ChangeUserSeedForm _buildUserSeedForm(context) =>
 			_ChangeUserSeedForm(
 		    currentSeed: _vm.currentUsersSeed,
 		    onApply: (newSeed) {
 			    _vm.setUserSeed(newSeed);
-			    showSeedAppliedSnack(context);
+			    _showSeedAppliedSnack(context);
 		    }
 	    );
 
-	Widget buildPlatformToggle(context) =>
+	Widget _buildPlatformToggle(context) =>
 			SafeStreamBuilder<ThemePlatform>(
 				stream: _vm.themePlatformStream,
 				builder: (context, snapshot) =>
@@ -72,8 +72,8 @@ class SettingsFragment extends StatelessWidget {
 				    selectedColor: Theme.of(context).accentColor,
 				    renderBorder: false,
 				    children: <Widget>[
-				      buildToggleButton('Android'),
-				      buildToggleButton('iOS'),
+				      _buildToggleButton('Android'),
+				      _buildToggleButton('iOS'),
 				    ],
 				    borderRadius: BorderRadius.circular(30),
 				    isSelected: [snapshot.data == ThemePlatform.ANDROID, snapshot.data == ThemePlatform.IOS],
@@ -81,7 +81,7 @@ class SettingsFragment extends StatelessWidget {
 				  ),
 			);
 
-	Container buildToggleButton(title) =>
+	Container _buildToggleButton(title) =>
 			Container(
 				height: 60,
 				width: 120,
@@ -95,28 +95,28 @@ class SettingsFragment extends StatelessWidget {
 				)
 			);
 
-	Widget buildThemeColorSelect(context) {
+	Widget _buildThemeColorSelect(context) {
 		return SafeStreamBuilder<ThemeColor>(
 			stream: _vm.themeColorStream,
 		  builder: (context, snapshot) =>
 			  Column(
 			    children: <Widget>[
-			      buildRadioListTile('Blue', Colors.blue, 0, snapshot.data),
-			      buildRadioListTile('Pink', Colors.pink, 1, snapshot.data),
-			      buildRadioListTile('Green', Colors.green, 2, snapshot.data),
+			      _buildRadioListTile('Blue', Colors.blue, 0, snapshot.data),
+			      _buildRadioListTile('Pink', Colors.pink, 1, snapshot.data),
+			      _buildRadioListTile('Green', Colors.green, 2, snapshot.data),
 			    ],
 		    ),
 		);
 	}
 
-	Widget buildRadioListTile(title, color, value, ThemeColor themeColor) =>
+	Widget _buildRadioListTile(title, color, value, ThemeColor themeColor) =>
 			RadioListTile(
 				title: Text(
 					title,
 					style: TextStyle(color: color),
 				),
 				value: value,
-				groupValue: convertThemeColorToGroupValue(themeColor),
+				groupValue: _convertThemeColorToGroupValue(themeColor),
 				onChanged: (value) {
 					switch (value) {
 						case 0:_vm.setThemeColor(ThemeColor.BLUE);
@@ -129,7 +129,7 @@ class SettingsFragment extends StatelessWidget {
 				},
 			);
 
-	convertThemeColorToGroupValue(ThemeColor color) {
+	_convertThemeColorToGroupValue(ThemeColor color) {
 		switch (color) {
 			case ThemeColor.BLUE: return 0;
 			case ThemeColor.PINK: return 1;
@@ -137,7 +137,7 @@ class SettingsFragment extends StatelessWidget {
 		}
 	}
 
-	showSeedAppliedSnack(context) {
+	_showSeedAppliedSnack(context) {
 		Scaffold.of(context).showSnackBar(
 			SnackBar(
 				content: Text('User seed has been applied'),
@@ -166,17 +166,17 @@ class _ChangeUserSeedForm extends StatelessWidget {
 			  child: Row(
 				  crossAxisAlignment: CrossAxisAlignment.start,
 				  children: <Widget>[
-					  buildTextField(context),
-					  buildApplyButton(context)
+					  _buildTextField(context),
+					  _buildApplyButton(context)
 				  ],
 			  ),
 		  );
 
-  Widget buildTextField(context) =>
+  Widget _buildTextField(context) =>
 		  Expanded(
 			  child: TextFormField(
 				  initialValue: currentSeed,
-				  validator: validateInput,
+				  validator: _validateInput,
 				  onSaved: (newSeed) {
 					  FocusScope.of(context).unfocus();
 				  	onApply(newSeed);
@@ -186,23 +186,23 @@ class _ChangeUserSeedForm extends StatelessWidget {
 				  style: TextStyle(fontSize: 20),
 				  decoration: InputDecoration(
 					  labelText: 'User seed',
-					  enabledBorder: createBorder(1, Theme.of(context).primaryColor),
-					  focusedBorder: createBorder(2, Theme.of(context).primaryColor),
-					  errorBorder: createBorder(1, Colors.red),
-					  focusedErrorBorder: createBorder(2, Colors.red),
+					  enabledBorder: _createBorder(1, Theme.of(context).primaryColor),
+					  focusedBorder: _createBorder(2, Theme.of(context).primaryColor),
+					  errorBorder: _createBorder(1, Colors.red),
+					  focusedErrorBorder: _createBorder(2, Colors.red),
 					  counterText: '',
 				  ),
 			  ),
 		  );
 
-  String validateInput(String text) {
+  String _validateInput(String text) {
 	  if (text.isEmpty) {
 		  return "Seed can't be empty";
 	  }
 	  return null;
   }
 
-	OutlineInputBorder createBorder(double width, Color color) =>
+	OutlineInputBorder _createBorder(double width, Color color) =>
 			OutlineInputBorder(
 				borderSide: BorderSide(
 					color: color,
@@ -210,7 +210,7 @@ class _ChangeUserSeedForm extends StatelessWidget {
 				),
 			);
 
-  Widget buildApplyButton(context) =>
+  Widget _buildApplyButton(context) =>
 		  Padding(
 			  padding: const EdgeInsets.only(left: 12),
 			  child: MaterialButton(

@@ -20,11 +20,22 @@ class _HomeRouteState extends State<HomeRoute> {
 	@override
   Widget build(BuildContext context) =>
 	    Scaffold(
-		    body: buildPageView(),
-		    bottomNavigationBar: buildBottomNavigationBar(),
+		    body: _buildPageView(),
+		    bottomNavigationBar: _buildBottomNavigationBar(),
 	    );
 
-	BottomNavigationBar buildBottomNavigationBar() =>
+	PageView _buildPageView() =>
+			PageView(
+					controller: _pageController,
+					children: [
+						UserGalleryFragment(),
+						UserStorageFragment(),
+						SettingsFragment(Provider.of<SettingsVM>(context, listen: false)),
+					],
+					physics: NeverScrollableScrollPhysics()
+			);
+
+	BottomNavigationBar _buildBottomNavigationBar() =>
 			BottomNavigationBar(
 		    currentIndex: _currentPage,
 		    onTap: (index) {
@@ -32,26 +43,15 @@ class _HomeRouteState extends State<HomeRoute> {
 		      setState(() => _currentPage = index);
 		    },
 		    items: <BottomNavigationBarItem>[
-		    	buildBottomNavItem(Icons.group, 'User Gallery'),
-		    	buildBottomNavItem(Icons.supervised_user_circle, 'Saved Users'),
-		    	buildBottomNavItem(Icons.settings, 'Settings'),
+		    	_buildBottomNavItem(Icons.group, 'User Gallery'),
+		    	_buildBottomNavItem(Icons.supervised_user_circle, 'Saved Users'),
+		    	_buildBottomNavItem(Icons.settings, 'Settings'),
 		    ],
 	    );
 
-	BottomNavigationBarItem buildBottomNavItem(IconData icon, String text) =>
+	BottomNavigationBarItem _buildBottomNavItem(IconData icon, String text) =>
 			BottomNavigationBarItem(
 				icon: Icon(icon),
 				title: Text(text),
 			);
-
-	PageView buildPageView() =>
-			PageView(
-		    controller: _pageController,
-		    children: [
-			    UserGalleryFragment(),
-			    UserStorageFragment(),
-			    SettingsFragment(Provider.of<SettingsVM>(context, listen: false)),
-		    ],
-		    physics: NeverScrollableScrollPhysics()
-	    );
 }

@@ -8,41 +8,41 @@ class UserDetailsRoute extends StatelessWidget {
 
 	final User user;
 
-  const UserDetailsRoute({Key key, this.user}) : super(key: key);
+  const UserDetailsRoute(this.user, {Key key}) : super(key: key);
 
 	@override
   Widget build(BuildContext context) =>
 			Scaffold(
-				appBar: buildAppBar(context),
-				body: buildBody(context),
+				appBar: _buildAppBar(context),
+				body: _buildBody(context),
 			);
 
-	AppBar buildAppBar(context) =>
+	AppBar _buildAppBar(context) =>
 			AppBar(
 				title: Text("User Details"),
 			);
 
-	Widget buildBody(context) =>
+	Widget _buildBody(context) =>
 			SingleChildScrollView(
 			  child: Column(
 			    children: <Widget>[
-			      buildAvatarWithNameOnIt(),
-			  	  buildInfoField(context, "Gender", user.gender),
-			  	  buildInfoField(context, "Email", user.email),
-			  	  buildInfoField(context, "Phone", user.phone),
+			      _buildAvatarWithNameOnIt(),
+			  	  _buildInfoField(context, "Gender", user.gender),
+			  	  _buildInfoField(context, "Email", user.email),
+			  	  _buildInfoField(context, "Phone", user.phone),
 			  	],
 			  ),
 			);
 
-	Widget buildAvatarWithNameOnIt() =>
+	Widget _buildAvatarWithNameOnIt() =>
 			Stack(
 				children: <Widget>[
-					buildAvatar(),
-					buildNameOnAvatar()
+					_buildAvatar(),
+					_buildNameOnAvatar()
 				],
 			);
 
-	Widget buildAvatar() =>
+	Widget _buildAvatar() =>
 			SizedBox(
 	      height: 300,
 	      width: double.infinity,
@@ -55,7 +55,7 @@ class UserDetailsRoute extends StatelessWidget {
 	      )
 	    );
 
-	SizedBox buildNameOnAvatar() =>
+	SizedBox _buildNameOnAvatar() =>
 			SizedBox(
 				height: 300,
 				width: double.infinity,
@@ -75,7 +75,7 @@ class UserDetailsRoute extends StatelessWidget {
 				),
 			);
 
-	Widget buildInfoField(context, String title, String value) =>
+	Widget _buildInfoField(context, String title, String value) =>
 			Padding(
 			  padding: const EdgeInsets.symmetric(horizontal: 16),
 			  child: Column(

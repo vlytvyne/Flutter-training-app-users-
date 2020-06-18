@@ -29,12 +29,12 @@ class _UserStorageFragmentState extends State<UserStorageFragment> with AfterLay
   @override
   Widget build(BuildContext context) {
   	return Scaffold(
-		  appBar: buildAppBar(context),
-  	  body: buildBody(),
+		  appBar: _buildAppBar(context),
+  	  body: _buildBody(),
   	);
   }
 
-  AppBar buildAppBar(context) =>
+  AppBar _buildAppBar(context) =>
 		  AppBar(
 			  title: Text('Saved users'),
 			  actions: <Widget>[
@@ -50,15 +50,15 @@ class _UserStorageFragmentState extends State<UserStorageFragment> with AfterLay
 			  ],
 		  );
 
-	Widget buildBody() =>
+	Widget _buildBody() =>
 			Stack(
 				children: <Widget>[
-					buildListWithSearch(context),
+					_buildListWithSearch(context),
 					buildLoadingIndicator(),
 				]
 			);
 
-	Widget buildListWithSearch(context) =>
+	Widget _buildListWithSearch(context) =>
 			Column(
 				children: <Widget>[
 					SearchField(
@@ -68,7 +68,7 @@ class _UserStorageFragmentState extends State<UserStorageFragment> with AfterLay
 						child: SafeStreamBuilder<List<User>>(
 							stream: _vm.userListStream,
 							builder: (context, snapshot) => snapshot.data.length != 0 ?
-								buildUsersList(context, snapshot.data)
+								_buildUsersList(context, snapshot.data)
 										:
 								Center(child: Text('No users')),
 						),
@@ -76,28 +76,28 @@ class _UserStorageFragmentState extends State<UserStorageFragment> with AfterLay
 				],
 			);
 
-	Widget buildUsersList(context, List<User> list) =>
+	Widget _buildUsersList(context, List<User> list) =>
 			ListView.builder(
 				itemCount: list.length,
-				itemBuilder: (context, index) => buildUserTile(context, list[index]),
+				itemBuilder: (context, index) => _buildUserTile(context, list[index]),
 			);
 
-	buildUserTile(context, User user) =>
+	_buildUserTile(context, User user) =>
 			Dismissible(
 				key: ValueKey(user.name.fullname),
 				direction: DismissDirection.endToStart,
-				background: buildDismissBackground(),
+				background: _buildDismissBackground(),
 				child: UserTile(
 					user,
-					onClick: () => onTileClick(context, user),
+					onClick: () => _onTileClick(context, user),
 				),
 				onDismissed: (_) => {
 					_vm.deleteUser(user),
-					showUndoSnackBar(context, user)
+					_showUndoSnackBar(context, user)
 				}
 			);
 
-	Container buildDismissBackground() =>
+	Container _buildDismissBackground() =>
 			Container(
 				color: Colors.red[600],
 				child: Align(
@@ -112,14 +112,14 @@ class _UserStorageFragmentState extends State<UserStorageFragment> with AfterLay
 				),
 			);
 
-	onTileClick(context, user) {
+	_onTileClick(context, user) {
 		Navigator.push(
 				context,
-				MaterialPageRoute(builder: (context) => UserDetailsRoute(user: user,))
+				MaterialPageRoute(builder: (context) => UserDetailsRoute(user,))
 		);
 	}
 
-	showUndoSnackBar(context, User user) {
+	_showUndoSnackBar(context, User user) {
 		Scaffold.of(context).showSnackBar(
 			SnackBar(
 				content: Text('${user.name.fullname} has been deleted'),

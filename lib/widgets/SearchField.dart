@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 
 class SearchField extends StatelessWidget {
 
-	final decorator = InputDecoration(
+	final _decorator = InputDecoration(
 			border: InputBorder.none,
 			focusedBorder: InputBorder.none,
 			icon: Icon(Icons.search),
 			hintText: 'Search'
 	);
 
-	final textStyle = TextStyle(
+	final _textStyle = TextStyle(
 			fontSize: 18
 	);
 
-	final textController = TextEditingController();
+	final _textController = TextEditingController();
 
 	final Function(String) onTextChanged;
 
@@ -28,33 +28,33 @@ class SearchField extends StatelessWidget {
 					color: Colors.white,
 					child: Row(
 						children: <Widget>[
-							buildSearchField(),
-							buildCloseButton()
+							_buildSearchField(),
+							_buildCloseButton()
 						],
 					),
 				),
 			);
 
-	Expanded buildSearchField() =>
+	Expanded _buildSearchField() =>
 			Expanded(
 				child: Center(
 					child: Padding(
 						padding: const EdgeInsets.only(left: 16, right: 8),
 						child: TextField(
 							onChanged: onTextChanged,
-							controller: textController,
-							style: textStyle,
-							decoration: decorator,
+							controller: _textController,
+							style: _textStyle,
+							decoration: _decorator,
 						),
 					),
 				),
 			);
 
-	IconButton buildCloseButton() =>
+	IconButton _buildCloseButton() =>
 			IconButton(
 				icon: Icon(Icons.close),
 				onPressed: () {
-					textController.clear();
+					_textController.clear();
 					onTextChanged('');
 				},
 			);

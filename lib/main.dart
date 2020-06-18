@@ -12,7 +12,8 @@ void main() {
 }
 
 class App extends StatelessWidget {
-	// This widget is the root of your application.
+	
+	//handling user theming
 	@override
 	Widget build(BuildContext context) {
 		return Provider<SettingsVM>(
@@ -26,7 +27,7 @@ class App extends StatelessWidget {
 				    MaterialApp(
 				      debugShowCheckedModeBanner: false,
 				      title: 'Flutter Demo',
-				      theme: buildThemeData(context, snapshot.data),
+				      theme: _buildThemeData(context, snapshot.data),
 				      home: HomeRoute(),
 				    ),
 			  ),
@@ -34,9 +35,9 @@ class App extends StatelessWidget {
 		);
 	}
 
-	ThemeData buildThemeData(BuildContext context, ThemeConfig config) {
+	ThemeData _buildThemeData(BuildContext context, ThemeConfig config) {
 		final platform = config.platform == ThemePlatform.ANDROID ? TargetPlatform.android : TargetPlatform.iOS;
-		final color = extractColor(config.color);
+		final color = _extractColor(config.color);
 	  return ThemeData(
 			textTheme: GoogleFonts.cabinTextTheme(Theme.of(context).textTheme,),
 	    primaryColor: color,
@@ -48,7 +49,7 @@ class App extends StatelessWidget {
 	}
 
 // ignore: missing_return
-	MaterialColor extractColor(ThemeColor color) {
+	MaterialColor _extractColor(ThemeColor color) {
 		switch (color) {
 			case ThemeColor.BLUE: return Colors.blue;
 			case ThemeColor.PINK: return Colors.pink;

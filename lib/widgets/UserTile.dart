@@ -25,7 +25,7 @@ class UserTile extends StatelessWidget {
 					style: TextStyle(fontSize: 18),
 				),
 				onTap: onClick ?? () {},
-				leading: buildAvatar(context),
+				leading: _buildAvatar(context),
 				trailing: hasSelectionOption ?
 					Checkbox(
 						value: user.isSelected,
@@ -35,7 +35,7 @@ class UserTile extends StatelessWidget {
 					SizedBox.shrink(),
 			);
 
-	Widget buildAvatar(context) =>
+	Widget _buildAvatar(context) =>
 			Hero(
 				tag: user.name.fullname + context.hashCode.toString(),
 				child: ClipOval(
