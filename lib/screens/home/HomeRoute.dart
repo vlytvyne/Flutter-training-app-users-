@@ -1,3 +1,4 @@
+import 'package:architecture/screens/settings/SettingsFragment.dart';
 import 'package:architecture/screens/user_gallery/UserGalleryFragment.dart';
 import 'package:architecture/screens/user_storage/UserStorageFragment.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +48,7 @@ class _HomeRouteState extends State<HomeRoute> {
 		    children: [
 			    UserGalleryFragment(),
 			    UserStorageFragment(),
-			    Text("Page 2"),
+			    SettingsFragment(),
 		    ],
 		    physics: NeverScrollableScrollPhysics()
 	    );

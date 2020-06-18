@@ -44,7 +44,7 @@ class UserTile extends StatelessWidget {
 						width: 40,
 						child: CachedNetworkImage(
 							imageUrl: user.picture.large,
-							placeholder: (context, url) => Container(color: Colors.blue,),
+							placeholder: (context, url) => Container(color: Theme.of(context).primaryColor,),
 						),
 					),
 				),
