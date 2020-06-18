@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 
 class SettingsFragment extends StatelessWidget {
 
-	final _vm = SettingsVM();
+	final SettingsVM _vm;
+
+  const SettingsFragment(this._vm, {Key key}) : super(key: key);
 
 	@override
   Widget build(BuildContext context) =>

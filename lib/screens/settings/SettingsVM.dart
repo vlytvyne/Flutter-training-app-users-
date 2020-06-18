@@ -12,7 +12,7 @@ class SettingsVM {
 	final _themePlatformEmitter = BehaviorSubject<ThemePlatform>.seeded(ThemeConfig.currentConfig.platform);
 	Stream<ThemePlatform> get themePlatformStream => _themePlatformEmitter.stream;
 
-	final _themeConfigEmitter = BehaviorSubject<ThemeConfig>();
+	final _themeConfigEmitter = BehaviorSubject<ThemeConfig>.seeded(ThemeConfig.currentConfig);
 	Stream<ThemeConfig> get themeConfigStream => _themeConfigEmitter.stream;
 
 	setUserSeed(String newSeed) {

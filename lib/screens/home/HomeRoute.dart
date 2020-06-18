@@ -1,7 +1,9 @@
 import 'package:architecture/screens/settings/SettingsFragment.dart';
+import 'package:architecture/screens/settings/SettingsVM.dart';
 import 'package:architecture/screens/user_gallery/UserGalleryFragment.dart';
 import 'package:architecture/screens/user_storage/UserStorageFragment.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeRoute extends StatefulWidget {
 
@@ -48,7 +50,7 @@ class _HomeRouteState extends State<HomeRoute> {
 		    children: [
 			    UserGalleryFragment(),
 			    UserStorageFragment(),
-			    SettingsFragment(),
+			    SettingsFragment(Provider.of<SettingsVM>(context, listen: false)),
 		    ],
 		    physics: NeverScrollableScrollPhysics()
 	    );
