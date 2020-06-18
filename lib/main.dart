@@ -28,7 +28,6 @@ class App extends StatelessWidget {
 			accentColor: Colors.blue,
 		  backgroundColor: Colors.blue[200],
 			cursorColor: Colors.blue,
-		  highlightColor: Colors.blue[100],
 //	    platform: TargetPlatform.android
 		);
 	}

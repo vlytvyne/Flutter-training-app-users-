@@ -3,7 +3,6 @@ import 'package:architecture/data/network/models/UsersResponse.dart';
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
-const USERS_SEED = "123";
 const USERS_IOP = 20;
 
 class OnlineRepository {
@@ -16,6 +15,7 @@ class OnlineRepository {
 
 	final UserAPI _userAPI = UserAPI(Dio());
 
+	String usersSeed = '123';
 	//requests
-	Future<UsersResponse> getRandomUser(int page) => _userAPI.getRandomUsers(USERS_SEED, USERS_IOP, page);
+	Future<UsersResponse> getRandomUser(int page) => _userAPI.getRandomUsers(usersSeed, USERS_IOP, page);
 }

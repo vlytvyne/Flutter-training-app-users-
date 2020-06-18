@@ -1,7 +1,10 @@
+import 'package:architecture/screens/settings/SettingsVM.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SettingsFragment extends StatelessWidget {
+
+	final _vm = SettingsVM();
 
 	@override
   Widget build(BuildContext context) =>
@@ -22,7 +25,7 @@ class SettingsFragment extends StatelessWidget {
 			    child: Column(
 			    	children: <Widget>[
 					    buildSettingTitle(context, 'Loaded users set'),
-					    buildUserSeedField(context),
+					    buildUserSeedForm(context),
 			  		  buildSettingTitle(context, 'Platform'),
 			  		  buildPlatformToggle(context),
 					    buildSettingTitle(context, 'Color theme'),
@@ -47,61 +50,18 @@ class SettingsFragment extends StatelessWidget {
 			  ),
 			);
 
-	Widget buildUserSeedField(context) =>
-			Form(
-				child: Row(
-					children: <Widget>[
-						buildTextField(context),
-						buildApplyButton(context)
-					],
-				),
-			);
+	_ChangeUserSeedForm buildUserSeedForm(context) =>
+			_ChangeUserSeedForm(
+		    currentSeed: _vm.currentUsersSeed,
+		    onApply: (newSeed) {
+			    _vm.setUserSeed(newSeed);
+			    showSeedAppliedSnack(context);
+		    }
+	    );
 
-	Center buildApplyButton(context) => 
-			Center(
-			  child: Padding(
-			    padding: const EdgeInsets.only(left: 12),
-			    child: MaterialButton(
-				      height: 60,
-			      child: Text(
-			        'Apply',
-			        style: TextStyle(
-			          color: Theme.of(context).primaryColor,
-			          fontSize: 20
-			        )
-			      ),
-			      onPressed: () {  },
-			    ),
-			  ),
-			);
-
-	Widget buildTextField(context) => 
-			Expanded(
-			  child: TextFormField(
-					textAlign: TextAlign.center,
-				  maxLength: 8,
-				  style: TextStyle(fontSize: 20),
-				  decoration: InputDecoration(
-					  labelText: 'User seed',
-					  enabledBorder: OutlineInputBorder(
-						    borderSide: BorderSide(
-							    color: Theme.of(context).primaryColor,
-						    ),
-					    ),
-					  focusedBorder: OutlineInputBorder(
-						    borderSide: BorderSide(
-							    color: Theme.of(context).primaryColor,
-							    width: 2,
-						    ),
-					    ),
-					  counterText: '',
-				  ),
-			  ),
-			);
-	
 	Widget buildPlatformToggle(context) =>
 			ToggleButtons(
-				fillColor: Theme.of(context).highlightColor,
+				fillColor: Theme.of(context).primaryColor.withAlpha(30),
 				selectedColor: Theme.of(context).accentColor,
 				renderBorder: false,
 				children: <Widget>[
@@ -145,9 +105,102 @@ class SettingsFragment extends StatelessWidget {
 							color: color
 					),
 				),
-				value: 0,
+				value: value,
 				groupValue: 0,
 				onChanged: (value) {},
 			);
+
+	showSeedAppliedSnack(context) {
+		Scaffold.of(context).showSnackBar(
+			SnackBar(
+				content: Text('User seed has been applied'),
+				duration: Duration(seconds: 2),
+			)
+		);
+	}
+
+}
+
+
+
+class _ChangeUserSeedForm extends StatelessWidget {
+
+	final _formKey = GlobalKey<FormState>();
+
+	final Function(String) onApply;
+	final String currentSeed;
+
+	_ChangeUserSeedForm({Key key, this.onApply, this.currentSeed}) : super(key: key);
+	
+  @override
+  Widget build(BuildContext context) =>
+		  Form(
+			  key: _formKey,
+			  child: Row(
+				  crossAxisAlignment: CrossAxisAlignment.start,
+				  children: <Widget>[
+					  buildTextField(context),
+					  buildApplyButton(context)
+				  ],
+			  ),
+		  );
+
+  Widget buildTextField(context) =>
+		  Expanded(
+			  child: TextFormField(
+				  initialValue: currentSeed,
+				  validator: validateInput,
+				  onSaved: (newSeed) {
+					  FocusScope.of(context).unfocus();
+				  	onApply(newSeed);
+				  },
+				  textAlign: TextAlign.center,
+				  maxLength: 8,
+				  style: TextStyle(fontSize: 20),
+				  decoration: InputDecoration(
+					  labelText: 'User seed',
+					  enabledBorder: createBorder(1, Theme.of(context).primaryColor),
+					  focusedBorder: createBorder(2, Theme.of(context).primaryColor),
+					  errorBorder: createBorder(1, Colors.red),
+					  focusedErrorBorder: createBorder(2, Colors.red),
+					  counterText: '',
+				  ),
+			  ),
+		  );
+
+  String validateInput(String text) {
+	  if (text.isEmpty) {
+		  return "Seed can't be empty";
+	  }
+	  return null;
+  }
+
+	OutlineInputBorder createBorder(double width, Color color) =>
+			OutlineInputBorder(
+				borderSide: BorderSide(
+					color: color,
+					width: width,
+				),
+			);
+
+  Widget buildApplyButton(context) =>
+		  Padding(
+			  padding: const EdgeInsets.only(left: 12),
+			  child: MaterialButton(
+				  height: 60,
+				  child: Text(
+					  'Apply',
+					  style: TextStyle(
+						  color: Theme.of(context).primaryColor,
+						  fontSize: 20
+					  )
+				  ),
+				  onPressed: () {
+					  if (_formKey.currentState.validate()) {
+							_formKey.currentState.save();
+					  }
+				  },
+			  ),
+		  );
 
 }
