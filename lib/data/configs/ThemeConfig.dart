@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 class ThemeConfig {
 
 	ThemeColor color;
@@ -5,7 +7,12 @@ class ThemeConfig {
 
   ThemeConfig(this.color, this.platform);
 
-  static final ThemeConfig currentConfig = ThemeConfig(ThemeColor.BLUE, ThemePlatform.ANDROID);
+  static ThemeConfig currentConfig = defaultConfig;
+
+  static final ThemeConfig defaultConfig = ThemeConfig(
+		  ThemeColor.BLUE,
+		  Platform.isAndroid ? ThemePlatform.ANDROID : ThemePlatform.IOS
+  );
 }
 
 enum ThemeColor {

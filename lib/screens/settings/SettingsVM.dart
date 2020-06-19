@@ -1,4 +1,5 @@
 import 'package:architecture/data/configs/ThemeConfig.dart';
+import 'package:architecture/data/repositories/OfflineRepository.dart';
 import 'package:architecture/data/repositories/OnlineRepository.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -17,18 +18,23 @@ class SettingsVM {
 
 	setUserSeed(String newSeed) {
 		OnlineRepository().usersSeed = newSeed;
+		OfflineRepository().saveUsersSeed(newSeed);
 	}
 
 	setThemeColor(ThemeColor color) {
-		ThemeConfig.currentConfig.color = color;
 		_themeColorEmitter.add(color);
-		_themeConfigEmitter.add(ThemeConfig.currentConfig);
+		_distributeConfig(ThemeConfig(color, ThemeConfig.currentConfig.platform));
 	}
 
 	setThemePlatform(ThemePlatform platform) {
-		ThemeConfig.currentConfig.platform = platform;
 		_themePlatformEmitter.add(platform);
-		_themeConfigEmitter.add(ThemeConfig.currentConfig);
+		_distributeConfig(ThemeConfig(ThemeConfig.currentConfig.color, platform));
+	}
+
+	_distributeConfig(ThemeConfig config) {
+		ThemeConfig.currentConfig = config;
+		_themeConfigEmitter.add(config);
+		OfflineRepository().saveThemeConfig(config);
 	}
 
 	dispose() {

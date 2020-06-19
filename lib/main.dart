@@ -1,13 +1,22 @@
 import 'package:architecture/data/configs/ThemeConfig.dart';
+import 'package:architecture/data/repositories/OfflineRepository.dart';
+import 'package:architecture/data/repositories/OnlineRepository.dart';
 import 'package:architecture/screens/settings/SettingsVM.dart';
 import 'package:architecture/widgets/SafeStreamBuilder.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'screens/home/HomeRoute.dart';
 
-void main() {
+Future<void> main() async {
+	//handling user theming
+	WidgetsFlutterBinding.ensureInitialized();
+	final config = await OfflineRepository().fetchThemeConfig();
+	ThemeConfig.currentConfig = config;
+	final usersSeed = await OfflineRepository().getUsersSeed();
+	OnlineRepository().usersSeed = usersSeed;
 	runApp(App());
 }
 
@@ -15,25 +24,24 @@ class App extends StatelessWidget {
 	
 	//handling user theming
 	@override
-	Widget build(BuildContext context) {
-		return Provider<SettingsVM>(
-			create: (_) => SettingsVM(),
-		  dispose: (_, vm) => vm.dispose(),
-		  child: Builder(
-			  builder: (context) =>
-			  SafeStreamBuilder<ThemeConfig>(
-				  stream: Provider.of<SettingsVM>(context).themeConfigStream,
-			    builder: (context, snapshot) =>
-				    MaterialApp(
-				      debugShowCheckedModeBanner: false,
-				      title: 'Flutter Demo',
-				      theme: _buildThemeData(context, snapshot.data),
-				      home: HomeRoute(),
+	Widget build(BuildContext context) =>
+			Provider<SettingsVM>(
+				create: (_) => SettingsVM(),
+			  dispose: (_, vm) => vm.dispose(),
+			  child: Builder(
+				  builder: (context) =>
+					  SafeStreamBuilder<ThemeConfig>(
+						  stream: Provider.of<SettingsVM>(context).themeConfigStream,
+					    builder: (context, snapshot) =>
+					      MaterialApp(
+								  debugShowCheckedModeBanner: false,
+								  title: 'Flutter Demo',
+								  theme: _buildThemeData(context, snapshot.data),
+								  home: HomeRoute(),
+							  ),
 				    ),
 			  ),
-		  ),
-		);
-	}
+			);
 
 	ThemeData _buildThemeData(BuildContext context, ThemeConfig config) {
 		final platform = config.platform == ThemePlatform.ANDROID ? TargetPlatform.android : TargetPlatform.iOS;

@@ -1,12 +1,20 @@
+import 'package:architecture/data/configs/ThemeConfig.dart';
 import 'package:architecture/data/db/AppDatabase.dart';
 import 'package:architecture/data/db/dao/UserDao.dart';
 import 'package:architecture/data/db/models/UserDbModel.dart';
 import 'package:architecture/data/filters/UserFilter.dart';
 import 'package:architecture/data/network/models/UsersResponse.dart';
+import 'package:architecture/data/repositories/OnlineRepository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+const PREFS_THEME_COLOR_KEY = 'themeColor';
+const PREFS_THEME_PLATFORM_KEY = 'themePlatform';
+const PREFS_USERS_SEED_KEY = 'usersSeed';
 
 class OfflineRepository {
 
 	AppDatabase _dbInstance;
+	SharedPreferences _prefsInstance;
 
 	factory OfflineRepository() => _instance;
 
@@ -19,6 +27,13 @@ class OfflineRepository {
 			_dbInstance = await $FloorAppDatabase.databaseBuilder('app_database').build();
 		}
 		return _dbInstance;
+	}
+
+	Future<SharedPreferences> _getPrefs() async {
+		if (_prefsInstance == null) {
+			_prefsInstance = await SharedPreferences.getInstance();
+		}
+		return _prefsInstance;
 	}
 
 	Future<void> saveUser(User user) async {
@@ -66,6 +81,49 @@ class OfflineRepository {
 	Future<void> deleteUser(User user) async {
 		final db = await _getDb();
 		db.userDao.deleteUser(UserDbModel.fromUserModel(user));
+	}
+
+	Future<void> saveThemeConfig(ThemeConfig config) async {
+		SharedPreferences prefs = await _getPrefs();
+		prefs.setInt(PREFS_THEME_COLOR_KEY, ThemeColor.values.indexOf(config.color));
+		prefs.setInt(PREFS_THEME_PLATFORM_KEY, ThemePlatform.values.indexOf(config.platform));
+	}
+	
+	Future<ThemeConfig> fetchThemeConfig() async {
+		SharedPreferences prefs = await _getPrefs();
+		final color = _getThemeColor(prefs);
+		final platform = _getThemePlatform(prefs);
+		return ThemeConfig(color, platform);
+	}
+
+	ThemeColor _getThemeColor(SharedPreferences prefs) {
+		if (prefs.containsKey(PREFS_THEME_COLOR_KEY)) {
+			return ThemeColor.values[prefs.getInt(PREFS_THEME_COLOR_KEY)];
+		} else {
+			return ThemeConfig.defaultConfig.color;
+		}
+	}
+
+	ThemePlatform _getThemePlatform(SharedPreferences prefs) {
+		if (prefs.containsKey(PREFS_THEME_PLATFORM_KEY)) {
+			return ThemePlatform.values[prefs.getInt(PREFS_THEME_PLATFORM_KEY)];
+		} else {
+			return ThemeConfig.defaultConfig.platform;
+		}
+	}
+	
+	Future<void> saveUsersSeed(String newSeed) async {
+		final prefs = await _getPrefs();
+		prefs.setString(PREFS_USERS_SEED_KEY, newSeed);
+	}
+
+	Future<String> getUsersSeed() async {
+		final prefs = await _getPrefs();
+		if (prefs.containsKey(PREFS_USERS_SEED_KEY)) {
+			return prefs.getString(PREFS_USERS_SEED_KEY);
+		} else {
+			return DEFAULT_USERS_SEED;
+		}
 	}
 
 }
