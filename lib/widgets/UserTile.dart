@@ -37,7 +37,7 @@ class UserTile extends StatelessWidget {
 
 	Widget _buildAvatar(context) =>
 			Hero(
-				tag: user.name.fullname + context.hashCode.toString(),
+				tag: user.name.fullname,
 				child: ClipOval(
 					child: SizedBox(
 						height: 40,
